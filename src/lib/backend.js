@@ -172,6 +172,23 @@ export async function listAdminContent(tableName) {
   return (data || []).map((r) => ({ id: r.id, ...r.data }));
 }
 
+export async function importContent(tableName, items, userId) {
+  if (!isSupabaseEnabled || !userId) return { error: 'Supabase not configured or not signed in.' };
+  const existing = await listAdminContent(tableName);
+  const existingIds = new Set(existing.map((r) => r.id));
+  const toInsert = (items || []).filter((item) => item && !existingIds.has(item.id));
+  const errors = [];
+  for (const item of toInsert) {
+    const res = await addContent(tableName, item, userId);
+    if (res.error) errors.push(`${item.id}: ${res.error}`);
+  }
+  return {
+    inserted: toInsert.length - errors.length,
+    skipped: (items || []).length - toInsert.length,
+    errors,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Admin checks
 // ---------------------------------------------------------------------------

@@ -83,6 +83,10 @@ export default function App() {
   const { isOnline, hasOfflineData } = useOffline();
   const hideLayout = authPages.includes(location.pathname);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname, location.search]);
+
   return (
     <div className="min-h-screen bg-light flex flex-col">
       <NotificationToast />

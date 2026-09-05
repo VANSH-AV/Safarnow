@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { useContent } from '../context/ContentContext';
-import { addContent, removeContent, listAdminContent, isAdminUser, getAdminGuidance } from '../lib/backend';
+import { addContent, removeContent, listAdminContent, importContent, isAdminUser, getAdminGuidance } from '../lib/backend';
 import { isSupabaseEnabled } from '../lib/supabase';
 import {
   ShieldCheck,
@@ -15,6 +15,7 @@ import {
   Hotel,
   ArrowLeft,
   Save,
+  Download,
   Image as ImageIcon,
 } from 'lucide-react';
 
@@ -173,6 +174,23 @@ export default function Admin() {
     }
   };
 
+  const handleImport = async () => {
+    const items = { destinations, packages, hotels }[tab] || [];
+    if (!window.confirm(`Import all ${items.length} bundled ${schema.table} into Supabase?`)) return;
+    const res = await importContent(schema.table, items, guidance);
+    if (res.error) {
+      addNotification(res.error, 'error');
+      return;
+    }
+    addNotification(
+      res.errors.length
+        ? `Imported ${res.inserted}, skipped ${res.skipped}, ${res.errors.length} failed`
+        : `Imported ${res.inserted} ${schema.table} (${res.skipped} already present)`,
+      res.errors.length ? 'error' : 'success'
+    );
+    setList(await listAdminContent(tab));
+  };
+
   const renderHeader = () => (
     <div className="flex flex-wrap items-center gap-3 mb-6">
       {[['destinations', MapPin, 'Destinations'], ['packages', Package, 'Packages'], ['hotels', Hotel, 'Hotels']].map(([key, Icon, label]) => (
@@ -186,6 +204,13 @@ export default function Admin() {
           <Icon className="w-4 h-4" /> {label}
         </button>
       ))}
+      <button
+        onClick={handleImport}
+        className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-white text-dark border border-gray-200 hover:bg-gray-50 transition-all"
+        title={`Import all ${({ destinations, packages, hotels }[tab] || []).length} bundled ${schema.table} into Supabase`}
+      >
+        <Download className="w-4 h-4" /> Import {schema.table}
+      </button>
       <button
         onClick={() => { setEditing(null); beforeEdit(); }}
         className="ml-auto flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-orange text-white hover:bg-orange/90 transition-all"

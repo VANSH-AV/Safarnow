@@ -1,0 +1,33 @@
+{
+  "name": "Safarnow — AI Powered Smart Tourism",
+  "short_name": "Safarnow",
+  "description": "Plan safer, smarter trips with AI-generated itineraries, safety scores, crowd intelligence and offline access.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F9FC",
+  "theme_color": "#0B2D4D",
+  "lang": "en",
+  "categories": ["travel", "lifestyle", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
