@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext';
 import { generateBookingId } from '../utils/helpers';
-import { getDestinationById } from '../data/destinations';
-import { getPackageById } from '../data/packages';
-import { getHotelById } from '../data/hotels';
+import { saveBooking } from '../lib/backend';
+import { useContent } from '../context/ContentContext';
 import BookingSummary from '../components/BookingSummary';
 import {
   User,
@@ -23,6 +22,7 @@ import {
 export default function Booking() {
   const navigate = useNavigate();
   const { addNotification } = useNotification();
+  const { getDestinationById, getPackageById, getHotelById } = useContent();
   const [bookingData, setBookingData] = useState(null);
   const [form, setForm] = useState({
     fullName: '',
@@ -67,14 +67,14 @@ export default function Booking() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.fullName || !form.email || !form.phone || !form.checkIn) {
       addNotification('Please fill in all required fields', 'error');
       return;
     }
     setLoading(true);
-    setTimeout(() => {
+    try {
       const booking = {
         id: generateBookingId(),
         destinationId: bookingData.destinationId,
@@ -100,15 +100,15 @@ export default function Booking() {
         image: destination?.image,
       };
 
-      const existing = JSON.parse(localStorage.getItem('safarnow_bookings') || '[]');
-      existing.push(booking);
-      localStorage.setItem('safarnow_bookings', JSON.stringify(existing));
+      await saveBooking(booking);
       localStorage.setItem('safarnow_last_booking', JSON.stringify(booking));
       localStorage.removeItem('safarnow_booking');
 
       addNotification('Booking confirmed successfully!', 'success');
       navigate('/booking/success');
-    }, 1500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

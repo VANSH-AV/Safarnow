@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { packages } from '../data/packages';
-import { getDestinationById } from '../data/destinations';
+import { useContent } from '../context/ContentContext';
 import { Search, Star, MapPin, Clock, ChevronRight, SlidersHorizontal } from 'lucide-react';
 
 const budgetFilters = ['All', 'Budget', 'Moderate', 'Premium', 'Luxury'];
 
 export default function Packages() {
+  const { packages, getDestinationById } = useContent();
   const [search, setSearch] = useState('');
   const [budget, setBudget] = useState('All');
 

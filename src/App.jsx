@@ -22,6 +22,8 @@ const Analytics = lazy(() => import('./pages/Analytics'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Share = lazy(() => import('./pages/Share'));
+const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 const authPages = ['/login', '/signup'];
@@ -41,6 +43,9 @@ const pageMeta = [
   { match: '/login', title: 'Sign In | Safarnow', desc: 'Sign in to continue your journey.' },
   { match: '/signup', title: 'Create Account | Safarnow', desc: 'Join Safarnow for smarter travel planning.' },
   { match: '/contact', title: 'Contact & Support | Safarnow', desc: 'Get in touch with the Safarnow team.' },
+  { match: '/share/', title: 'Shared Itinerary | Safarnow', desc: 'A friend shared their AI-planned itinerary with you.' },
+  { match: '/admin', title: 'Admin Studio | Safarnow', desc: 'Manage destinations, packages and hotels.' },
+  { match: '/share/', title: 'Shared Itinerary | Safarnow', desc: 'A friend shared their AI-planned trip with you.' },
 ];
 
 function idToTitle(id) {
@@ -106,6 +111,8 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/share/:token" element={<Share />} />
+            <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, MapPin, Package, Hotel, X, ArrowRight, ScrollText } from 'lucide-react';
 import Modal from './Modal';
-import { destinations } from '../data/destinations';
-import { packages } from '../data/packages';
-import { hotels } from '../data/hotels';
+import { useContent } from '../context/ContentContext';
 import { activities } from '../data/activities';
 
 export default function SearchModal({ isOpen, onClose }) {
+  const { destinations, packages, hotels } = useContent();
   const [query, setQuery] = useState('');
 
   useEffect(() => {

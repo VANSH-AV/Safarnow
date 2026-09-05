@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { getHotelById } from '../data/hotels';
+import { useContent } from '../context/ContentContext';
 import { useNotification } from '../context/NotificationContext';
 import SafetyScore from '../components/SafetyScore';
 import ReviewCard from '../components/ReviewCard';
@@ -11,6 +11,7 @@ import {
 export default function HotelDetail() {
   const { id } = useParams();
   const { addNotification } = useNotification();
+  const { getHotelById } = useContent();
   const hotel = getHotelById(id);
 
   if (!hotel) {

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getDestinationById } from '../data/destinations';
 import { getWeatherByDestination } from '../data/weather';
 import { useOffline } from '../context/OfflineContext';
 import { useNotification } from '../context/NotificationContext';
+import { useContent } from '../context/ContentContext';
+import { getBookings as fetchBookings, getSavedTrips as fetchSavedTrips } from '../lib/backend';
 import { downloadETicket } from '../utils/eticket';
 import SafetyScore from '../components/SafetyScore';
 import {
@@ -29,12 +30,19 @@ export default function MyTrips() {
   const [activeTab, setActiveTab] = useState('upcoming');
   const { saveForOffline } = useOffline();
   const { addNotification } = useNotification();
+  const { getDestinationById } = useContent();
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('safarnow_bookings') || '[]');
-    setBookings(stored);
-    const saved = JSON.parse(localStorage.getItem('safarnow_saved_trips') || '[]');
-    setSavedTrips(saved);
+    let alive = true;
+    (async () => {
+      const [bookingsData, savedData] = await Promise.all([fetchBookings(), fetchSavedTrips()]);
+      if (!alive) return;
+      setBookings(bookingsData);
+      setSavedTrips(savedData);
+    })();
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const handleDownload = (trip) => {

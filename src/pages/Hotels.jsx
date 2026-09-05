@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { hotels } from '../data/hotels';
+import { useContent } from '../context/ContentContext';
 import { Search, Star, MapPin, ChevronRight, SlidersHorizontal, Shield } from 'lucide-react';
 
 const starFilters = ['All', '5 Star', '4 Star', '3 Star'];
 
 export default function Hotels() {
+  const { hotels } = useContent();
   const [search, setSearch] = useState('');
   const [stars, setStars] = useState('All');
 

@@ -4,7 +4,8 @@ import { generateItinerary, buildSmartContext } from '../utils/helpers';
 import { getWeatherByDestination } from '../data/weather';
 import { useNotification } from '../context/NotificationContext';
 import { useOffline } from '../context/OfflineContext';
-import { destinations } from '../data/destinations';
+import { useContent } from '../context/ContentContext';
+import { createShareLink } from '../lib/backend';
 import SmartContextDashboard from '../components/SmartContextDashboard';
 import ActivityDetailModal from '../components/ActivityDetailModal';
 import {
@@ -22,6 +23,7 @@ import {
   List,
   CloudSun,
   Eye,
+  Share2,
 } from 'lucide-react';
 
 const mapPins = [
@@ -48,6 +50,7 @@ export default function AIPlanner() {
   const navigate = useNavigate();
   const { addNotification } = useNotification();
   const { isOnline, saveForOffline } = useOffline();
+  const { destinations } = useContent();
   const [step, setStep] = useState(0);
   const [preferences, setPreferences] = useState({
     destination: '',
@@ -140,6 +143,22 @@ export default function AIPlanner() {
     } else {
       addNotification('Please select a valid destination', 'error');
     }
+  };
+
+  const handleShare = async () => {
+    if (!itinerary) return;
+    const token = await createShareLink({
+      ...itinerary,
+      destinationId: selectedDestination?.id || null,
+      dateLabel: preferences.startDate || null,
+    });
+    if (!token) {
+      addNotification('Sign in with Supabase to share your itinerary', 'error');
+      return;
+    }
+    const url = `${window.location.origin}/share/${token}`;
+    navigator.clipboard?.writeText(url).catch(() => {});
+    addNotification('Share link copied to clipboard!', 'success');
   };
 
   const steps = ['Destination', 'Preferences', 'Budget', 'Review'];
@@ -620,6 +639,12 @@ export default function AIPlanner() {
                 className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold bg-blue text-white hover:bg-blue/90 transition-all"
               >
                 <WifiOff className="w-4 h-4" /> Save for Offline
+              </button>
+              <button
+                onClick={handleShare}
+                className="flex items-center justify-center gap-2 px-6 py-3.5 border-2 border-blue/40 text-blue rounded-xl font-semibold hover:bg-blue/5 transition-all"
+              >
+                <Share2 className="w-4 h-4" /> Share
               </button>
               <Link
                 to="/destinations"

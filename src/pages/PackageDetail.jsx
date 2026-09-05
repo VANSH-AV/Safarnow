@@ -1,6 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getPackageById } from '../data/packages';
-import { getDestinationById } from '../data/destinations';
+import { useContent } from '../context/ContentContext';
 import { useNotification } from '../context/NotificationContext';
 import ReviewCard from '../components/ReviewCard';
 import {
@@ -11,6 +10,7 @@ import {
 export default function PackageDetail() {
   const { id } = useParams();
   const { addNotification } = useNotification();
+  const { getPackageById, getDestinationById } = useContent();
   const pkg = getPackageById(id);
   const destination = pkg ? getDestinationById(pkg.destination) : null;
   const navigate = useNavigate();

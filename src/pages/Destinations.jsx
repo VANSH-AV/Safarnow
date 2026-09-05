@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { destinations } from '../data/destinations';
+import { useContent } from '../context/ContentContext';
 import {
   MapPin,
   Star,
@@ -17,6 +17,7 @@ const crowdLevels = ['All', 'Low', 'Moderate', 'High'];
 const sortOptions = ['Featured', 'Rating: High to Low', 'Price: Low to High', 'Price: High to Low', 'Safety: High to Low'];
 
 export default function Destinations() {
+  const { destinations } = useContent();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [budget, setBudget] = useState('All');

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Hero from '../components/Hero';
-import { destinations } from '../data/destinations';
-import { packages } from '../data/packages';
+import { useContent } from '../context/ContentContext';
 import { useNotification } from '../context/NotificationContext';
 import {
   MapPin,
@@ -79,6 +78,7 @@ const categoryTabs = [
 export default function Home() {
   const navigate = useNavigate();
   const { addNotification } = useNotification();
+  const { destinations, packages } = useContent();
   const [activeTab, setActiveTab] = useState('smart-itinerary');
   const [searchDest, setSearchDest] = useState('');
   const [dates, setDates] = useState('');

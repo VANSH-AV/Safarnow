@@ -14,7 +14,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!email || !password) {
@@ -22,16 +22,17 @@ export default function Login() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      const result = login(email, password);
-      setLoading(false);
+    try {
+      const result = await login(email, password);
       if (result.success) {
         addNotification('Welcome back! Successfully logged in.', 'success');
         navigate('/');
       } else {
         setError(result.error);
       }
-    }, 800);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

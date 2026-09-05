@@ -466,6 +466,474 @@ export const destinations = [
       sat: { morning: 68, afternoon: 92, evening: 95 },
       sun: { morning: 55, afternoon: 75, evening: 80 }
     }
+  },
+  {
+    id: 'varanasi',
+    name: 'Varanasi',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800&q=80',
+    description: 'The spiritual heart of India. Ancient ghats, sunrise boat rides on the Ganges, and mesmerizing Ganga Aarti make Varanasi an unmissable pilgrimage.',
+    rating: 4.7,
+    safetyScore: 76,
+    crowdLevel: 'High',
+    bestSeason: 'October - March',
+    avgBudget: 9000,
+    recommendedDuration: '3-4 Days',
+    categories: ['Spiritual', 'Culture', 'History', 'Photography'],
+    attractions: [
+      { name: 'Dashashwamedh Ghat', type: 'Spiritual' },
+      { name: 'Kashi Vishwanath Temple', type: 'Heritage' },
+      { name: 'Ganges Boat Ride', type: 'Nature' },
+      { name: 'Sarnath', type: 'Historical' },
+      { name: 'Manikarnika Ghat', type: 'Spiritual' },
+      { name: 'Banaras Hindu University', type: 'Culture' }
+    ],
+    thingsToDo: ['Sunrise Boat Ride', 'Ganga Aarti', 'Weave Workshop', 'Temple Hopping', 'Street Food Trail', 'Silk Shopping'],
+    weather: { avgTemp: 26, rainfall: 980, humidity: 60 },
+    nearbyServices: [
+      { type: 'hospital', name: 'BHU Medical Hospital', distance: '3.0 km' },
+      { type: 'police', name: 'Kotwali Police Station', distance: '1.2 km' },
+      { type: 'pharmacy', name: 'Ganga Pharmacy', distance: '0.5 km' }
+    ],
+    crowdData: {
+      mon: { morning: 55, afternoon: 75, evening: 90 },
+      tue: { morning: 50, afternoon: 70, evening: 85 },
+      wed: { morning: 55, afternoon: 72, evening: 88 },
+      thu: { morning: 60, afternoon: 78, evening: 92 },
+      fri: { morning: 70, afternoon: 85, evening: 96 },
+      sat: { morning: 80, afternoon: 92, evening: 98 },
+      sun: { morning: 75, afternoon: 88, evening: 95 }
+    }
+  },
+  {
+    id: 'rishikesh',
+    name: 'Rishikesh',
+    state: 'Uttarakhand',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=800&q=80',
+    description: 'The Yoga Capital of the World. River rafting on the Ganges, cliff jumping, ashrams and the iconic Lakshman Jhula draw adventure seekers worldwide.',
+    rating: 4.6,
+    safetyScore: 88,
+    crowdLevel: 'Moderate',
+    bestSeason: 'September - June',
+    avgBudget: 10000,
+    recommendedDuration: '4-5 Days',
+    categories: ['Adventure', 'Nature', 'Spiritual', 'Wellness'],
+    attractions: [
+      { name: 'Lakshman Jhula', type: 'Landmark' },
+      { name: 'Triveni Ghat', type: 'Spiritual' },
+      { name: 'Neelkanth Mahadev', type: 'Heritage' },
+      { name: 'Marine Drive Rafting', type: 'Adventure' },
+      { name: 'Beatles Ashram', type: 'Culture' },
+      { name: 'Kunjapuri Temple', type: 'Adventure' }
+    ],
+    thingsToDo: ['River Rafting', 'Bungee Jumping', 'Yoga Retreat', 'Beach Camping', 'Cliff Jumping', 'Ganga Snan'],
+    weather: { avgTemp: 17, rainfall: 1400, humidity: 52 },
+    nearbyServices: [
+      { type: 'hospital', name: 'Uttarakhand Medical', distance: '2.5 km' },
+      { type: 'police', name: 'Rishikesh Police Station', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'Himalaya Pharmacy', distance: '0.4 km' }
+    ],
+    crowdData: {
+      mon: { morning: 20, afternoon: 45, evening: 55 },
+      tue: { morning: 18, afternoon: 40, evening: 50 },
+      wed: { morning: 20, afternoon: 42, evening: 52 },
+      thu: { morning: 22, afternoon: 45, evening: 55 },
+      fri: { morning: 40, afternoon: 65, evening: 72 },
+      sat: { morning: 60, afternoon: 82, evening: 88 },
+      sun: { morning: 55, afternoon: 75, evening: 80 }
+    }
+  },
+  {
+    id: 'darjeeling',
+    name: 'Darjeeling',
+    state: 'West Bengal',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1507124484497-b7f446e65519?w=800&q=80',
+    description: 'Queen of the Hills. Rolling tea estates, the iconic toy train, and a clear view of Kanchenjunga from Tiger Hill.',
+    rating: 4.6,
+    safetyScore: 91,
+    crowdLevel: 'Low',
+    bestSeason: 'October - May',
+    avgBudget: 12000,
+    recommendedDuration: '4-5 Days',
+    categories: ['Mountains', 'Nature', 'Tea', 'Heritage'],
+    attractions: [
+      { name: 'Tiger Hill', type: 'Nature' },
+      { name: 'Batasia Loop', type: 'Heritage' },
+      { name: 'Darjeeling Himalayan Railway', type: 'Heritage' },
+      { name: 'Padmaja Naidu Zoo', type: 'Family' },
+      { name: 'Peace Pagoda', type: 'Spiritual' },
+      { name: 'Happy Valley Tea Estate', type: 'Nature' }
+    ],
+    thingsToDo: ['Sunrise at Tiger Hill', 'Toy Train Ride', 'Tea Tasting', 'Himalayan Trek', 'Monastery Visit', 'Mall Road Stroll'],
+    weather: { avgTemp: 10, rainfall: 2800, humidity: 82 },
+    nearbyServices: [
+      { type: 'hospital', name: 'District Hospital Darjeeling', distance: '2.0 km' },
+      { type: 'police', name: 'Darjeeling Police Station', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'Mount Medicine', distance: '0.6 km' }
+    ],
+    crowdData: {
+      mon: { morning: 15, afternoon: 30, evening: 25 },
+      tue: { morning: 12, afternoon: 28, evening: 22 },
+      wed: { morning: 15, afternoon: 32, evening: 25 },
+      thu: { morning: 18, afternoon: 35, evening: 28 },
+      fri: { morning: 30, afternoon: 50, evening: 45 },
+      sat: { morning: 50, afternoon: 70, evening: 65 },
+      sun: { morning: 45, afternoon: 62, evening: 55 }
+    }
+  },
+  {
+    id: 'agra',
+    name: 'Agra',
+    state: 'Uttar Pradesh',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&q=80',
+    description: 'Home of the Taj Mahal. Mughal architecture, marble inlay crafts and the legacy of emperor Shah Jahan in one golden city.',
+    rating: 4.5,
+    safetyScore: 74,
+    crowdLevel: 'High',
+    bestSeason: 'October - March',
+    avgBudget: 10000,
+    recommendedDuration: '2-3 Days',
+    categories: ['History', 'Architecture', 'Culture', 'Photography'],
+    attractions: [
+      { name: 'Taj Mahal', type: 'Heritage' },
+      { name: 'Agra Fort', type: 'Historical' },
+      { name: 'Fatehpur Sikri', type: 'Historical' },
+      { name: 'Mehtab Bagh', type: 'Garden' },
+      { name: 'Itmad-ud-Daulah', type: 'Architecture' },
+      { name: 'Kinari Bazaar', type: 'Shopping' }
+    ],
+    thingsToDo: ['Taj Sunrise Visit', 'Fort Exploration', 'Marble Inlay Workshop', 'Mughlai Food Trail', 'Sikri Day Trip', 'Rikshaw Ride'],
+    weather: { avgTemp: 25, rainfall: 700, humidity: 50 },
+    nearbyServices: [
+      { type: 'hospital', name: 'SN Medical College', distance: '2.8 km' },
+      { type: 'police', name: 'Tajganj Police Station', distance: '1.4 km' },
+      { type: 'pharmacy', name: 'Medplus Pharmacy', distance: '0.5 km' }
+    ],
+    crowdData: {
+      mon: { morning: 40, afternoon: 70, evening: 60 },
+      tue: { morning: 38, afternoon: 65, evening: 58 },
+      wed: { morning: 42, afternoon: 68, evening: 62 },
+      thu: { morning: 40, afternoon: 70, evening: 60 },
+      fri: { morning: 55, afternoon: 85, evening: 75 },
+      sat: { morning: 70, afternoon: 95, evening: 85 },
+      sun: { morning: 65, afternoon: 90, evening: 80 }
+    }
+  },
+  {
+    id: 'amritsar',
+    name: 'Amritsar',
+    state: 'Punjab',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=80',
+    description: 'City of the Golden Temple. Punjab\'s spiritual and culinary capital, famous for the sacred Harmandir Sahib and its warm hospitality.',
+    rating: 4.8,
+    safetyScore: 89,
+    crowdLevel: 'High',
+    bestSeason: 'November - March',
+    avgBudget: 8000,
+    recommendedDuration: '2-3 Days',
+    categories: ['Spiritual', 'History', 'Food', 'Culture'],
+    attractions: [
+      { name: 'Golden Temple', type: 'Spiritual' },
+      { name: 'Jallianwala Bagh', type: 'Historical' },
+      { name: 'Wagah Border', type: 'Landmark' },
+      { name: 'Partition Museum', type: 'Heritage' },
+      { name: 'Gobindgarh Fort', type: 'Historical' },
+      { name: 'Hall Bazaar', type: 'Shopping' }
+    ],
+    thingsToDo: ['Golden Temple Langar', 'Wagah Border Ceremony', 'Partition Museum Visit', 'Amritsari Kulcha Trail', 'Heritage Walk', 'Punjabi Cultural Show'],
+    weather: { avgTemp: 23, rainfall: 720, humidity: 45 },
+    nearbyServices: [
+      { type: 'hospital', name: 'Civil Hospital', distance: '2.2 km' },
+      { type: 'police', name: 'Hall Gate Police Station', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'Manav Pharmacy', distance: '0.4 km' }
+    ],
+    crowdData: {
+      mon: { morning: 45, afternoon: 70, evening: 80 },
+      tue: { morning: 42, afternoon: 68, evening: 78 },
+      wed: { morning: 45, afternoon: 72, evening: 82 },
+      thu: { morning: 48, afternoon: 75, evening: 85 },
+      fri: { morning: 60, afternoon: 85, evening: 92 },
+      sat: { morning: 75, afternoon: 95, evening: 98 },
+      sun: { morning: 70, afternoon: 90, evening: 95 }
+    }
+  },
+  {
+    id: 'coorg',
+    name: 'Coorg',
+    state: 'Karnataka',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?w=800&q=80',
+    description: 'The Scotland of India. Misty coffee plantations, dense rainforests and waterfalls make Coorg a serene hill escape in the Western Ghats.',
+    rating: 4.7,
+    safetyScore: 94,
+    crowdLevel: 'Low',
+    bestSeason: 'October - May',
+    avgBudget: 11000,
+    recommendedDuration: '3-4 Days',
+    categories: ['Nature', 'Family', 'Adventure', 'Coffee'],
+    attractions: [
+      { name: 'Abbey Falls', type: 'Nature' },
+      { name: 'Raja\'s Seat', type: 'Nature' },
+      { name: 'Mandalpatti Peak', type: 'Adventure' },
+      { name: 'Dubare Elephant Camp', type: 'Wildlife' },
+      { name: 'Talakaveri', type: 'Spiritual' },
+      { name: 'Coffee Plantation Walk', type: 'Nature' }
+    ],
+    thingsToDo: ['Coffee Estate Tour', 'River Rafting', 'Elephant Bathing', 'Honey Bee Farm', 'Peak Trek', 'Homestay Bonfire'],
+    weather: { avgTemp: 21, rainfall: 2600, humidity: 75 },
+    nearbyServices: [
+      { type: 'hospital', name: 'District Hospital Madikeri', distance: '3.0 km' },
+      { type: 'police', name: 'Madikeri Police Station', distance: '1.5 km' },
+      { type: 'pharmacy', name: 'Green Valley Pharmacy', distance: '0.6 km' }
+    ],
+    crowdData: {
+      mon: { morning: 12, afternoon: 25, evening: 18 },
+      tue: { morning: 10, afternoon: 22, evening: 15 },
+      wed: { morning: 12, afternoon: 25, evening: 18 },
+      thu: { morning: 15, afternoon: 28, evening: 20 },
+      fri: { morning: 28, afternoon: 48, evening: 42 },
+      sat: { morning: 50, afternoon: 75, evening: 68 },
+      sun: { morning: 45, afternoon: 68, evening: 60 }
+    }
+  },
+  {
+    id: 'andaman',
+    name: 'Andaman Islands',
+    state: 'Andaman & Nicobar',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=800&q=80',
+    description: 'Crystal-clear turquoise waters, coral reefs and pristine white-sand beaches ringed by dense tropical forest. India\'s island paradise.',
+    rating: 4.8,
+    safetyScore: 86,
+    crowdLevel: 'Low',
+    bestSeason: 'October - May',
+    avgBudget: 30000,
+    recommendedDuration: '5-6 Days',
+    categories: ['Beaches', 'Adventure', 'Nature', 'Family'],
+    attractions: [
+      { name: 'Radhanagar Beach', type: 'Beach' },
+      { name: 'Cellular Jail', type: 'Historical' },
+      { name: 'Ross Island', type: 'Heritage' },
+      { name: 'Barren Island Volcano', type: 'Nature' },
+      { name: 'Scuba Diving Havelock', type: 'Adventure' },
+      { name: 'Elephanta Beach', type: 'Beach' }
+    ],
+    thingsToDo: ['Scuba Diving', 'Glass Bottom Boat', 'Sea Walking', 'Island Hopping', 'Snorkeling', 'Coral Watching'],
+    weather: { avgTemp: 28, rainfall: 3100, humidity: 80 },
+    nearbyServices: [
+      { type: 'hospital', name: 'GB Pant Hospital', distance: '2.0 km' },
+      { type: 'police', name: 'Port Blair Police Station', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'Andaman Pharmacy', distance: '0.5 km' }
+    ],
+    crowdData: {
+      mon: { morning: 10, afternoon: 25, evening: 15 },
+      tue: { morning: 8, afternoon: 22, evening: 12 },
+      wed: { morning: 10, afternoon: 25, evening: 15 },
+      thu: { morning: 12, afternoon: 28, evening: 18 },
+      fri: { morning: 22, afternoon: 45, evening: 38 },
+      sat: { morning: 40, afternoon: 65, evening: 55 },
+      sun: { morning: 35, afternoon: 58, evening: 48 }
+    }
+  },
+  {
+    id: 'jaisalmer',
+    name: 'Jaisalmer',
+    state: 'Rajasthan',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800&q=80',
+    description: 'The Golden City. A living fort, havelis carved from sandstone, and endless dunes that come alive with camel safaris at sunset.',
+    rating: 4.6,
+    safetyScore: 84,
+    crowdLevel: 'Moderate',
+    bestSeason: 'October - March',
+    avgBudget: 12000,
+    recommendedDuration: '3-4 Days',
+    categories: ['Desert', 'Adventure', 'Culture', 'Photography'],
+    attractions: [
+      { name: 'Jaisalmer Fort', type: 'Heritage' },
+      { name: 'Patwon Ki Haveli', type: 'Architecture' },
+      { name: 'Sam Sand Dunes', type: 'Nature' },
+      { name: 'Gadisar Lake', type: 'Nature' },
+      { name: 'Bada Bagh', type: 'Historical' },
+      { name: 'Desert National Park', type: 'Wildlife' }
+    ],
+    thingsToDo: ['Camel Safari', 'Dune Camping', 'Desert Sunset', 'Fort Staying', 'Folk Music Night', 'Balloon Ride'],
+    weather: { avgTemp: 27, rainfall: 200, humidity: 32 },
+    nearbyServices: [
+      { type: 'hospital', name: 'District Hospital Jaisalmer', distance: '1.8 km' },
+      { type: 'police', name: 'Fort Police Station', distance: '0.8 km' },
+      { type: 'pharmacy', name: 'Rajasthan Pharmacy', distance: '0.5 km' }
+    ],
+    crowdData: {
+      mon: { morning: 15, afternoon: 35, evening: 40 },
+      tue: { morning: 12, afternoon: 32, evening: 38 },
+      wed: { morning: 15, afternoon: 35, evening: 42 },
+      thu: { morning: 18, afternoon: 38, evening: 45 },
+      fri: { morning: 30, afternoon: 55, evening: 65 },
+      sat: { morning: 50, afternoon: 78, evening: 85 },
+      sun: { morning: 45, afternoon: 70, evening: 78 }
+    }
+  },
+  {
+    id: 'pondicherry',
+    name: 'Pondicherry',
+    state: 'Puducherry',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80',
+    description: 'A slice of French Indochine on the Coromandel coast. Pastel boulevards, seaside promenades and an Auroville utopia.',
+    rating: 4.5,
+    safetyScore: 90,
+    crowdLevel: 'Moderate',
+    bestSeason: 'October - March',
+    avgBudget: 11000,
+    recommendedDuration: '3-4 Days',
+    categories: ['Culture', 'Beaches', 'Food', 'History'],
+    attractions: [
+      { name: 'Promenade Beach', type: 'Beach' },
+      { name: 'Auroville', type: 'Spiritual' },
+      { name: 'French Quarter', type: 'Culture' },
+      { name: 'Sri Aurobindo Ashram', type: 'Spiritual' },
+      { name: 'Paradise Beach', type: 'Beach' },
+      { name: 'Arikamedu', type: 'Historical' }
+    ],
+    thingsToDo: ['French Quarter Walk', 'Auroville Visit', 'Beach Yoga', 'Creole Food Trail', 'Boutique Shopping', 'Sunset at Promenade'],
+    weather: { avgTemp: 29, rainfall: 1250, humidity: 74 },
+    nearbyServices: [
+      { type: 'hospital', name: 'JIPMER Hospital', distance: '2.4 km' },
+      { type: 'police', name: 'Puducherry Police Station', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'French Pharmacy', distance: '0.3 km' }
+    ],
+    crowdData: {
+      mon: { morning: 18, afternoon: 40, evening: 50 },
+      tue: { morning: 15, afternoon: 38, evening: 48 },
+      wed: { morning: 18, afternoon: 42, evening: 52 },
+      thu: { morning: 20, afternoon: 45, evening: 55 },
+      fri: { morning: 35, afternoon: 60, evening: 70 },
+      sat: { morning: 55, afternoon: 82, evening: 88 },
+      sun: { morning: 50, afternoon: 75, evening: 82 }
+    }
+  },
+  {
+    id: 'bangkok',
+    name: 'Bangkok',
+    state: 'Bangkok',
+    country: 'Thailand',
+    image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=80',
+    description: 'The Land of Smiles. Golden temples, floating markets, rooftop bars and fiery street food in a city that never sleeps.',
+    rating: 4.7,
+    safetyScore: 91,
+    crowdLevel: 'High',
+    bestSeason: 'November - February',
+    avgBudget: 40000,
+    recommendedDuration: '4-5 Days',
+    categories: ['Food', 'Culture', 'Shopping', 'Nightlife'],
+    attractions: [
+      { name: 'Grand Palace', type: 'Heritage' },
+      { name: 'Wat Arun', type: 'Spiritual' },
+      { name: 'Floating Market', type: 'Culture' },
+      { name: 'Chatuchak Market', type: 'Shopping' },
+      { name: 'Jim Thompson House', type: 'Heritage' },
+      { name: 'Chao Phraya River', type: 'Nature' }
+    ],
+    thingsToDo: ['Temple Hopping', 'Street Food Tour', 'Rooftop Sunset', 'Thai Massage', 'Boat Ride', 'Night Market'],
+    weather: { avgTemp: 30, rainfall: 1500, humidity: 78 },
+    nearbyServices: [
+      { type: 'hospital', name: 'Bumrungrad Hospital', distance: '2.5 km' },
+      { type: 'police', name: 'Tourist Police', distance: '1.2 km' },
+      { type: 'pharmacy', name: 'Boots Pharmacy', distance: '0.3 km' }
+    ],
+    crowdData: {
+      mon: { morning: 35, afternoon: 60, evening: 75 },
+      tue: { morning: 32, afternoon: 58, evening: 72 },
+      wed: { morning: 38, afternoon: 62, evening: 78 },
+      thu: { morning: 35, afternoon: 60, evening: 75 },
+      fri: { morning: 48, afternoon: 75, evening: 90 },
+      sat: { morning: 65, afternoon: 90, evening: 96 },
+      sun: { morning: 55, afternoon: 80, evening: 88 }
+    }
+  },
+  {
+    id: 'istanbul',
+    name: 'Istanbul',
+    state: 'Istanbul',
+    country: 'Turkey',
+    image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=800&q=80',
+    description: 'Where East meets West. Minarets and mosques, the Bosphorus strait, grand bazaars and history spanning two continents.',
+    rating: 4.8,
+    safetyScore: 88,
+    crowdLevel: 'High',
+    bestSeason: 'April - June, September - November',
+    avgBudget: 52000,
+    recommendedDuration: '5-6 Days',
+    categories: ['History', 'Culture', 'Food', 'Architecture'],
+    attractions: [
+      { name: 'Hagia Sophia', type: 'Heritage' },
+      { name: 'Blue Mosque', type: 'Spiritual' },
+      { name: 'Topkapi Palace', type: 'Historical' },
+      { name: 'Bosphorus Cruise', type: 'Nature' },
+      { name: 'Grand Bazaar', type: 'Shopping' },
+      { name: 'Basilica Cistern', type: 'Historical' }
+    ],
+    thingsToDo: ['Mosque Hopping', 'Bosphorus Cruise', 'Grand Bazaar Bargain', 'Turkish Tea Break', 'Hammam Experience', 'Kebab Trail'],
+    weather: { avgTemp: 15, rainfall: 810, humidity: 72 },
+    nearbyServices: [
+      { type: 'hospital', name: 'Istanbul University Hospital', distance: '3.0 km' },
+      { type: 'police', name: 'Sultanahmet Police', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'Merkez Pharmacy', distance: '0.4 km' }
+    ],
+    crowdData: {
+      mon: { morning: 40, afternoon: 70, evening: 65 },
+      tue: { morning: 38, afternoon: 65, evening: 60 },
+      wed: { morning: 42, afternoon: 68, evening: 62 },
+      thu: { morning: 40, afternoon: 70, evening: 65 },
+      fri: { morning: 52, afternoon: 80, evening: 78 },
+      sat: { morning: 70, afternoon: 95, evening: 90 },
+      sun: { morning: 65, afternoon: 90, evening: 85 }
+    }
+  },
+  {
+    id: 'shillong',
+    name: 'Shillong',
+    state: 'Meghalaya',
+    country: 'India',
+    image: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=800&q=80',
+    description: 'Scotland of the East. Rolling pine hills, living root bridges, waterfalls and the wettest places on earth await in Meghalaya.',
+    rating: 4.7,
+    safetyScore: 92,
+    crowdLevel: 'Low',
+    bestSeason: 'September - May',
+    avgBudget: 17000,
+    recommendedDuration: '5-6 Days',
+    categories: ['Nature', 'Adventure', 'Culture', 'Photography'],
+    attractions: [
+      { name: 'Umiam Lake', type: 'Nature' },
+      { name: 'Double Decker Root Bridge', type: 'Nature' },
+      { name: 'Elephant Falls', type: 'Nature' },
+      { name: 'Mawsmai Caves', type: 'Adventure' },
+      { name: 'Laitlum Canyon', type: 'Nature' },
+      { name: 'Shillong Peak', type: 'Nature' }
+    ],
+    thingsToDo: ['Root Bridge Trek', 'Cave Exploration', 'Waterfall Hop', 'Local Food Trail', 'Living Root Ride', 'Sunrise at Peak'],
+    weather: { avgTemp: 18, rainfall: 5000, humidity: 88 },
+    nearbyServices: [
+      { type: 'hospital', name: 'NEIGRIHMS Hospital', distance: '2.5 km' },
+      { type: 'police', name: 'Shillong Police Station', distance: '1.0 km' },
+      { type: 'pharmacy', name: 'Meghalaya Pharmacy', distance: '0.5 km' }
+    ],
+    crowdData: {
+      mon: { morning: 12, afternoon: 28, evening: 20 },
+      tue: { morning: 10, afternoon: 25, evening: 18 },
+      wed: { morning: 12, afternoon: 28, evening: 20 },
+      thu: { morning: 15, afternoon: 30, evening: 22 },
+      fri: { morning: 25, afternoon: 45, evening: 40 },
+      sat: { morning: 45, afternoon: 68, evening: 60 },
+      sun: { morning: 40, afternoon: 60, evening: 52 }
+    }
   }
 ];
 

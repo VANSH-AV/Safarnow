@@ -332,6 +332,321 @@ export const packages = [
       { user: 'Aisha K.', rating: 5, comment: 'Romantic beyond words! Eiffel Tower at night was magical.' },
       { user: 'Rohan P.', rating: 4, comment: 'Beautiful city. The museum pass saved so much time.' }
     ]
+  },
+  {
+    id: 'varanasi-spiritual',
+    name: 'Varanasi Spiritual Retreat',
+    destination: 'varanasi',
+    image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800&q=80',
+    duration: '3 Days / 2 Nights',
+    days: 3,
+    rating: 4.7,
+    originalPrice: 12499,
+    price: 8999,
+    highlights: ['Ganga Aarti', 'Sunrise Boat Ride', 'Kashi Vishwanath', 'Sarnath Visit', 'Silk & Banarasi Weave'],
+    inclusions: ['Hotel Stay', 'Breakfast', 'Boat Rides', 'Guided Ghat Walk', 'Temple Tour'],
+    exclusions: ['Flights/Train', 'Lunch & Dinner', 'Personal Expenses'],
+    travelType: ['Spiritual', 'Culture', 'History'],
+    budget: 'Budget',
+    safetyScore: 76,
+    crowdLevel: 'High',
+    hotels: [
+      { name: 'BrijRama Palace', stars: 4, price: 7500 },
+      { name: 'Hotel Surya', stars: 3, price: 2500 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival & Aarti', activities: ['Station/airport pickup', 'Hotel check-in', 'Ghat walk', 'Ganga Aarti'] },
+      { day: 2, title: 'Temples & Sarnath', activities: ['Sunrise boat ride', 'Kashi Vishwanath', 'Sarnath tour', 'Weaver workshop'] },
+      { day: 3, title: 'Departure', activities: ['Breakfast', 'Silk shopping', 'Drop off'] }
+    ],
+    reviews: [
+      { user: 'Meera I.', rating: 5, comment: 'The Ganga Aarti was unforgettable. Truly spiritual.' },
+      { user: 'Kunal D.', rating: 4, comment: 'Great experience. Boat ride at sunrise is a must.' }
+    ]
+  },
+  {
+    id: 'rishikesh-adventure',
+    name: 'Rishikesh Adventure & Yoga',
+    destination: 'rishikesh',
+    image: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=800&q=80',
+    duration: '4 Days / 3 Nights',
+    days: 4,
+    rating: 4.6,
+    originalPrice: 18999,
+    price: 13499,
+    highlights: ['River Rafting', 'Bungee Jump', 'Yoga Retreat', 'Beach Camping', 'Beatles Ashram'],
+    inclusions: ['Camp Stay', 'All Meals', 'Activities', 'Transport', 'Instructor'],
+    exclusions: ['Flights/Train', 'Lunch & Dinner', 'Personal Expenses', 'Insurance'],
+    travelType: ['Adventure', 'Wellness', 'Nature'],
+    budget: 'Moderate',
+    safetyScore: 88,
+    crowdLevel: 'Moderate',
+    hotels: [
+      { name: 'Taj Rishikesh Resort', stars: 5, price: 10000 },
+      { name: 'Green Hotel Tapovan', stars: 3, price: 2800 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival & Ganges', activities: ['Pickup', 'Check-in', 'Lakshman Jhula', 'Triveni Ghat aarti'] },
+      { day: 2, title: 'Adventure Day', activities: ['River rafting', 'Cliff jumping', 'Beach side lunch', 'Campfire'] },
+      { day: 3, title: 'Thrills & Peace', activities: ['Bungee jump', 'Yoga session', 'Beatles Ashram', 'Evening meditation'] },
+      { day: 4, title: 'Departure', activities: ['Breakfast', 'Neelkanth visit', 'Drop'] }
+    ],
+    reviews: [
+      { user: 'Rahul V.', rating: 5, comment: 'Rafting was thrilling and the yoga was calming. Perfect mix.' },
+      { user: 'Sneha K.', rating: 4, comment: 'Great adventure trip. Campfire by the river was magical.' }
+    ]
+  },
+  {
+    id: 'darjeeling-tea-trails',
+    name: 'Darjeeling Tea Trails',
+    destination: 'darjeeling',
+    image: 'https://images.unsplash.com/photo-1507124484497-b7f446e65519?w=800&q=80',
+    duration: '4 Days / 3 Nights',
+    days: 4,
+    rating: 4.6,
+    originalPrice: 20999,
+    price: 15499,
+    highlights: ['Tiger Hill Sunrise', 'Toy Train', 'Tea Estate Tour', 'Batasia Loop', 'Kanchenjunga View'],
+    inclusions: ['Heritage Hotel', 'Breakfast', 'Toy Train Ticket', 'Tea Tasting', 'Sightseeing'],
+    exclusions: ['Flights', 'Lunch & Dinner', 'Personal Expenses'],
+    travelType: ['Mountains', 'Nature', 'Tea', 'Heritage'],
+    budget: 'Moderate',
+    safetyScore: 91,
+    crowdLevel: 'Low',
+    hotels: [
+      { name: 'Glenburn Tea Estate', stars: 4, price: 9500 },
+      { name: 'Mayfair Darjeeling', stars: 4, price: 7000 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival in Hills', activities: ['Pickup from NJP/Bagdogra', 'Scenic drive', 'Check-in', 'Mall Road stroll'] },
+      { day: 2, title: 'Sunrise & Tea', activities: ['Tiger Hill sunrise', 'Batasia Loop', 'Tea estate tour', 'Tea tasting'] },
+      { day: 3, title: 'Toy Train & Culture', activities: ['Toy train ride', 'Peace Pagoda', 'Zoo', 'Local market'] },
+      { day: 4, title: 'Departure', activities: ['Breakfast', 'Souvenir shopping', 'Drop'] }
+    ],
+    reviews: [
+      { user: 'Ananya G.', rating: 5, comment: 'Toy train ride was a dream! Tea tasting at the estate was lovely.' },
+      { user: 'Vikram S.', rating: 4, comment: 'Stunning views of Kanchenjunga. Very peaceful.' }
+    ]
+  },
+  {
+    id: 'agra-iconic',
+    name: 'Agra & the Taj',
+    destination: 'agra',
+    image: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?w=800&q=80',
+    duration: '2 Days / 1 Night',
+    days: 2,
+    rating: 4.5,
+    originalPrice: 9999,
+    price: 6999,
+    highlights: ['Taj Mahal Sunrise', 'Agra Fort', 'Mehtab Bagh', 'Marble Inlay', 'Mughlai Dinner'],
+    inclusions: ['Hotel Stay', 'Breakfast', 'Guided Tours', 'Transfers', 'Entry Tickets'],
+    exclusions: ['Flights/Train', 'Lunch & Dinner', 'Personal Expenses'],
+    travelType: ['History', 'Architecture', 'Romance', 'Photography'],
+    budget: 'Budget',
+    safetyScore: 74,
+    crowdLevel: 'High',
+    hotels: [
+      { name: 'ITC Mughal, Agra', stars: 5, price: 12000 },
+      { name: 'Tajview Hotel', stars: 3, price: 3200 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Forts & Markets', activities: ['Pickup', 'Agra Fort', 'Mehtab Bagh sunset', 'Kinari Bazaar'] },
+      { day: 2, title: 'Taj Sunrise', activities: ['Taj Mahal sunrise visit', 'Marble inlay demo', 'Breakfast', 'Drop'] }
+    ],
+    reviews: [
+      { user: 'Nisha T.', rating: 5, comment: 'Seeing the Taj at sunrise was worth everything. Magical!' },
+      { user: 'Arvind K.', rating: 4, comment: 'Well organized. Mughlai dinner was delicious.' }
+    ]
+  },
+  {
+    id: 'amritsar-spiritual',
+    name: 'Amritsar Golden Temple',
+    destination: 'amritsar',
+    image: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=80',
+    duration: '2 Days / 1 Night',
+    days: 2,
+    rating: 4.8,
+    originalPrice: 9999,
+    price: 6999,
+    highlights: ['Golden Temple', 'Langar Experience', 'Wagah Border Ceremony', 'Partition Museum', 'Punjabi Food'],
+    inclusions: ['Hotel Stay', 'Breakfast & Dinner', 'Transfers', 'Guided Temple Tour', 'Wagah Transfer'],
+    exclusions: ['Flights', 'Lunch', 'Personal Expenses'],
+    travelType: ['Spiritual', 'History', 'Food'],
+    budget: 'Budget',
+    safetyScore: 89,
+    crowdLevel: 'High',
+    hotels: [
+      { name: 'Hyatt Regency Amritsar', stars: 5, price: 9000 },
+      { name: 'Hotel Grand Imperial', stars: 4, price: 5500 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Darbar Sahib', activities: ['Pickup from airport/station', 'Golden Temple visit', 'Langar experience', 'Evening Palki'] },
+      { day: 2, title: 'Border & Museum', activities: ['Wagah Border ceremony', 'Partition Museum', 'Amritsari lunch', 'Drop'] }
+    ],
+    reviews: [
+      { user: 'Jaspreet B.', rating: 5, comment: 'The Golden Temple is breathtaking. The langar was humbling.' },
+      { user: 'Rohan T.', rating: 5, comment: 'Wagah border ceremony gave me goosebumps. Highly recommend.' }
+    ]
+  },
+  {
+    id: 'coorg-serene',
+    name: 'Coorg Serene Highlands',
+    destination: 'coorg',
+    image: 'https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?w=800&q=80',
+    duration: '3 Days / 2 Nights',
+    days: 3,
+    rating: 4.7,
+    originalPrice: 17999,
+    price: 12499,
+    highlights: ['Coffee Estate Stay', 'Abbey Falls', 'Elephant Camp', 'River Rafting', 'Homestay Bonfire'],
+    inclusions: ['Estate Stay', 'All Meals', 'Safari', 'Activities', 'Transport'],
+    exclusions: ['Flights/Train', 'Personal Expenses', 'Insurance'],
+    travelType: ['Nature', 'Family', 'Adventure', 'Coffee'],
+    budget: 'Moderate',
+    safetyScore: 94,
+    crowdLevel: 'Low',
+    hotels: [
+      { name: 'Evolve Back, Coorg', stars: 5, price: 14000 },
+      { name: 'Coorg Coffee Farm House', stars: 3, price: 3500 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Estate Arrival', activities: ['Pickup from Mysore/Coorg', 'Coffee plantation walk', 'Estate check-in', 'Bonfire'] },
+      { day: 2, title: 'Falls & Elephants', activities: ['Abbey Falls', 'Dubare elephants', 'River rafting', 'Raja\'s Seat'] },
+      { day: 3, title: 'Departure', activities: ['Mandalpatti sunrise', 'Breakfast', 'Drop'] }
+    ],
+    reviews: [
+      { user: 'Priyanka N.', rating: 5, comment: 'Waking up to coffee plantation mist was dreamlike.' },
+      { user: 'Aditya R.', rating: 4, comment: 'Great family trip. Elephant bathing was the highlight.' }
+    ]
+  },
+  {
+    id: 'andaman-island',
+    name: 'Andaman Island Escape',
+    destination: 'andaman',
+    image: 'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=800&q=80',
+    duration: '5 Days / 4 Nights',
+    days: 5,
+    rating: 4.8,
+    originalPrice: 45999,
+    price: 32999,
+    highlights: ['Radhanagar Beach', 'Scuba Diving', 'Cellular Jail', 'Ross Island', 'Island Hopping'],
+    inclusions: ['Resort Stay', 'Breakfast', 'Ferry Tickets', 'Diving Session', 'Transfers'],
+    exclusions: ['Flights', 'Lunch & Dinner', 'Personal Expenses', 'Insurance'],
+    travelType: ['Beaches', 'Adventure', 'Nature', 'Family'],
+    budget: 'Premium',
+    safetyScore: 86,
+    crowdLevel: 'Low',
+    hotels: [
+      { name: 'Radisson Blu Resort', stars: 5, price: 11000 },
+      { name: 'Sinclairs Bayview', stars: 4, price: 7000 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Arrival & Jail', activities: ['Airport pickup', 'Cellular Jail', 'Light & sound show', 'Check-in'] },
+      { day: 2, title: 'Havelock', activities: ['Ferry to Havelock', 'Radhanagar Beach', 'Sunset'] },
+      { day: 3, title: 'Underwater Day', activities: ['Scuba diving', 'Kalapathar Beach', 'Snorkeling'] },
+      { day: 4, title: 'Ross & Back', activities: ['Ross Island', 'Return to Port Blair', 'Local market'] },
+      { day: 5, title: 'Departure', activities: ['Breakfast', 'Chidiya Tapu', 'Airport drop'] }
+    ],
+    reviews: [
+      { user: 'Sanya M.', rating: 5, comment: 'Scuba diving changed my life! Radhanagar is paradise.' },
+      { user: 'Kunal G.', rating: 5, comment: 'Perfect island getaway. Crystal clear water everywhere.' }
+    ]
+  },
+  {
+    id: 'jaisalmer-desert',
+    name: 'Jaisalmer Desert Nights',
+    destination: 'jaisalmer',
+    image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=800&q=80',
+    duration: '3 Days / 2 Nights',
+    days: 3,
+    rating: 4.6,
+    originalPrice: 15999,
+    price: 11499,
+    highlights: ['Camel Safari', 'Sam Sand Dunes', 'Fort Stay', 'Desert Camping', 'Folk Night'],
+    inclusions: ['Fort Stay', 'Camel Safari', 'Dune Camping', 'All Meals', 'Folk Performance'],
+    exclusions: ['Flights', 'Personal Expenses', 'Insurance', 'Balloon Ride'],
+    travelType: ['Desert', 'Adventure', 'Culture', 'Photography'],
+    budget: 'Moderate',
+    safetyScore: 84,
+    crowdLevel: 'Moderate',
+    hotels: [
+      { name: 'Suryagarh Jaisalmer', stars: 5, price: 12000 },
+      { name: 'Desert Heritage Haveli', stars: 3, price: 3000 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Golden City', activities: ['Pickup', 'Jaisalmer Fort tour', 'Patwon Ki Haveli', 'Gadisar Lake'] },
+      { day: 2, title: 'Dune Day', activities: ['Sam Sand Dunes', 'Camel safari', 'Desert camping', 'Folk music night'] },
+      { day: 3, title: 'Departure', activities: ['Dune sunrise', 'Breakfast', 'Drop'] }
+    ],
+    reviews: [
+      { user: 'Devika S.', rating: 5, comment: 'Sleeping under the stars in the desert is unreal.' },
+      { user: 'Ankit P.', rating: 4, comment: 'Great value. The folk night was a lovely touch.' }
+    ]
+  },
+  {
+    id: 'bangkok-city',
+    name: 'Bangkok City Break',
+    destination: 'bangkok',
+    image: 'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&q=80',
+    duration: '4 Days / 3 Nights',
+    days: 4,
+    rating: 4.7,
+    originalPrice: 58999,
+    price: 42999,
+    highlights: ['Grand Palace', 'Wat Arun', 'Street Food Tour', 'Floating Market', 'Rooftop Bar'],
+    inclusions: ['4 Star Hotel', 'Breakfast', 'City Tours', 'Airport Transfers', 'Boat Ride'],
+    exclusions: ['Flights', 'Visa', 'Lunch & Dinner', 'Personal Expenses'],
+    travelType: ['Food', 'Culture', 'Shopping', 'Family'],
+    budget: 'Premium',
+    safetyScore: 91,
+    crowdLevel: 'High',
+    hotels: [
+      { name: 'Lebua State Tower', stars: 5, price: 14000 },
+      { name: 'Bangkok City Hotel', stars: 4, price: 6500 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Welcome to Bangkok', activities: ['Airport pickup', 'Grand Palace', 'Wat Pho', 'Rooftop sunset'] },
+      { day: 2, title: 'Temples & River', activities: ['Wat Arun', 'Boat ride on Chao Phraya', 'Jim Thompson House', 'Night market'] },
+      { day: 3, title: 'Markets & Food', activities: ['Floating market', 'Chatuchak market', 'Street food tour', 'Thai massage'] },
+      { day: 4, title: 'Departure', activities: ['Breakfast', 'Shopping', 'Airport drop'] }
+    ],
+    reviews: [
+      { user: 'Harsh V.', rating: 5, comment: 'Street food tour was incredible. Bangkok is a food lover\'s dream.' },
+      { user: 'Sakshi J.', rating: 4, comment: 'Great trip. Grand Palace is a must-see.' }
+    ]
+  },
+  {
+    id: 'istanbul-cultural',
+    name: 'Istanbul Cultural Odyssey',
+    destination: 'istanbul',
+    image: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=800&q=80',
+    duration: '5 Days / 4 Nights',
+    days: 5,
+    rating: 4.8,
+    originalPrice: 75999,
+    price: 55999,
+    highlights: ['Hagia Sophia', 'Blue Mosque', 'Bosphorus Cruise', 'Grand Bazaar', 'Hammam'],
+    inclusions: ['Boutique Hotel', 'Breakfast', 'Museum Passes', 'Bosphorus Cruise', 'Airport Transfers'],
+    exclusions: ['Flights', 'Visa', 'Lunch & Dinner', 'Personal Expenses'],
+    travelType: ['History', 'Culture', 'Food', 'Architecture'],
+    budget: 'Premium',
+    safetyScore: 88,
+    crowdLevel: 'High',
+    hotels: [
+      { name: 'Hagia Sofia Mansions', stars: 5, price: 16000 },
+      { name: 'Ottoman Hotel Imperial', stars: 4, price: 9000 }
+    ],
+    itinerary: [
+      { day: 1, title: 'Two Continents', activities: ['Airport pickup', 'Hagia Sophia', 'Blue Mosque', 'Sultanahmet walk'] },
+      { day: 2, title: 'Palaces & Cisterns', activities: ['Topkapi Palace', 'Basilica Cistern', 'Suleymaniye Mosque', 'Turkish tea'] },
+      { day: 3, title: 'Bosphorus Day', activities: ['Bosphorus cruise', 'Dolmabahce Palace', 'Ortakoy bazaar', 'Seafood dinner'] },
+      { day: 4, title: 'Bazaars & Hammam', activities: ['Grand Bazaar', 'Spice Bazaar', 'Hammam experience', 'Galata tower rooftop'] },
+      { day: 5, title: 'Departure', activities: ['Breakfast', 'Mosaic museum', 'Airport drop'] }
+    ],
+    reviews: [
+      { user: 'Kabir M.', rating: 5, comment: 'History at every corner. The Bosphorus cruise was stunning.' },
+      { user: 'Anita L.', rating: 5, comment: 'Hammam experience was the perfect ending. Loved Istanbul!' }
+    ]
   }
 ];
 

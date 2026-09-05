@@ -1,8 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
-import { getDestinationById } from '../data/destinations';
 import { getWeatherByDestination } from '../data/weather';
-import { getPackagesByDestination } from '../data/packages';
 import { getActivitiesByDestination } from '../data/activities';
+import { useContent } from '../context/ContentContext';
+import { saveTrip } from '../lib/backend';
 import SafetyScore from '../components/SafetyScore';
 import {
   MapPin, Star, Clock, CloudSun, ArrowRight, Bookmark, Share2, Thermometer, Droplets, Wind, ChevronRight,
@@ -16,6 +16,7 @@ import {
 export default function DestinationDetail() {
   const { id } = useParams();
   const { addNotification } = useNotification();
+  const { getDestinationById, getPackagesByDestination } = useContent();
   const destination = getDestinationById(id);
   const weather = getWeatherByDestination(id);
   const packages = getPackagesByDestination(id);
@@ -32,15 +33,9 @@ export default function DestinationDetail() {
     );
   }
 
-  const handleSave = () => {
-    const saved = JSON.parse(localStorage.getItem('safarnow_saved_trips') || '[]');
-    if (!saved.find((s) => s.destinationId === id)) {
-      saved.push({ destinationId: id, savedAt: new Date().toISOString() });
-      localStorage.setItem('safarnow_saved_trips', JSON.stringify(saved));
-      addNotification(`${destination.name} saved to your trips!`, 'success');
-    } else {
-      addNotification('Already saved!', 'info');
-    }
+  const handleSave = async () => {
+    await saveTrip(id, { destinationId: id, savedAt: new Date().toISOString() });
+    addNotification(`${destination.name} saved to your trips!`, 'success');
   };
 
   return (

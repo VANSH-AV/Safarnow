@@ -46,7 +46,7 @@ export default function Signup() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!form.fullName || !form.email || !form.password) {
@@ -62,16 +62,17 @@ export default function Signup() {
       return;
     }
     setLoading(true);
-    setTimeout(() => {
-      const result = signup(form.fullName, form.email, form.password, form.preferences);
-      setLoading(false);
+    try {
+      const result = await signup(form.fullName, form.email, form.password, form.preferences);
       if (result.success) {
-        addNotification('Account created successfully! Welcome to Safarnow.', 'success');
+        addNotification(result.message || 'Account created successfully! Welcome to Safarnow.', 'success');
         navigate('/');
       } else {
         setError(result.error);
       }
-    }, 800);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
