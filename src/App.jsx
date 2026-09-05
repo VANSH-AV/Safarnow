@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import NotificationToast from './components/NotificationToast';
 import OfflineIndicator from './components/OfflineIndicator';
+import ScrollToTop from './components/ScrollToTop';
 import { useOffline } from './context/OfflineContext';
 import Home from './pages/Home';
 
@@ -83,10 +84,6 @@ export default function App() {
   const { isOnline, hasOfflineData } = useOffline();
   const hideLayout = authPages.includes(location.pathname);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname, location.search]);
-
   return (
     <div className="min-h-screen bg-light flex flex-col">
       <NotificationToast />
@@ -96,6 +93,7 @@ export default function App() {
           Internet connection unavailable. Your saved itinerary is still available offline.
         </div>
       )}
+      <ScrollToTop />
       <main className="flex-1">
         <Suspense fallback={<PageLoading />}>
           <Routes>
