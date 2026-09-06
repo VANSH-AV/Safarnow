@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import NotificationToast from './components/NotificationToast';
 import OfflineIndicator from './components/OfflineIndicator';
 import ScrollToTop from './components/ScrollToTop';
+import ChatWidget from './components/ChatWidget';
 import { useOffline } from './context/OfflineContext';
 import Home from './pages/Home';
 
@@ -121,6 +122,7 @@ export default function App() {
       </main>
       {!hideLayout && <Footer />}
       {!hideLayout && <OfflineIndicator />}
+      <ChatWidget />
     </div>
   );
 }

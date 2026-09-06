@@ -22,21 +22,25 @@ export function AuthProvider({ children }) {
     if (!isSupabaseEnabled) return undefined;
 
     let active = true;
+    let subscription = null;
+
     supabase.auth.getSession().then(({ data }) => {
       if (!active) return;
       if (data?.session) setUser(toAppUser(data.session.user));
       setInitializing(false);
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    supabase.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
       setUser(session?.user ? toAppUser(session.user) : null);
       setInitializing(false);
+    }).then(({ data }) => {
+      if (active) subscription = data?.subscription || null;
     });
 
     return () => {
       active = false;
-      listener?.subscription.unsubscribe();
+      subscription?.unsubscribe();
     };
   }, []);
 
