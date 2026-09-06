@@ -1,16 +1,4 @@
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-} from 'recharts';
+import { LineChartView, BarGroupChart, DonutChart } from './SvgCharts';
 import {
   CloudSun,
   Users,
@@ -153,38 +141,14 @@ export default function SmartContextDashboard({ data }) {
             <Thermometer className="w-4 h-4 text-orange" />
             <h4 className="text-sm font-semibold text-dark">Temperature Trend</h4>
           </div>
-          <ResponsiveContainer width="100%" height={180}>
-            <AreaChart data={tempChart}>
-              <defs>
-                <linearGradient id="tempGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FF8A25" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#FF8A25" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis
-                dataKey="time"
-                tick={{ fontSize: 11, fill: '#64748B' }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: '12px',
-                  border: '1px solid #e5e7eb',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)',
-                  fontSize: '12px',
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="high"
-                stroke="#FF8A25"
-                strokeWidth={2}
-                fill="url(#tempGrad)"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <LineChartView
+            data={tempChart}
+            xKey="time"
+            height={180}
+            area
+            series={[{ key: 'temp', name: 'Temp', color: '#FF8A25' }]}
+            tooltipFormatter={(v) => `${v}°C`}
+          />
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 p-5">
@@ -192,39 +156,14 @@ export default function SmartContextDashboard({ data }) {
             <TrendingUp className="w-4 h-4 text-amber-500" />
             <h4 className="text-sm font-semibold text-dark">Crowd Forecast</h4>
           </div>
-          <ResponsiveContainer width="100%" height={180}>
-            <BarChart data={crowdChart}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis
-                dataKey="time"
-                tick={{ fontSize: 11, fill: '#64748B' }}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: '12px',
-                  border: '1px solid #e5e7eb',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)',
-                  fontSize: '12px',
-                }}
-              />
-              <Bar dataKey="level" radius={[4, 4, 0, 0]}>
-                {crowdChart.map((entry, index) => (
-                  <Cell
-                    key={index}
-                    fill={
-                      entry.level > 70
-                        ? '#DC2626'
-                        : entry.level > 40
-                          ? '#F59E0B'
-                          : '#16A34A'
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <BarGroupChart
+            data={crowdChart}
+            xKey="time"
+            height={180}
+            series={[{ key: 'level', name: 'Level', color: '#1688D4' }]}
+            getBarColor={(entry) => (entry.level > 70 ? '#DC2626' : entry.level > 40 ? '#F59E0B' : '#16A34A')}
+            tooltipFormatter={(v) => `${v}/100`}
+          />
         </div>
       </div>
 
@@ -235,30 +174,13 @@ export default function SmartContextDashboard({ data }) {
             <h4 className="text-sm font-semibold text-dark">Safety Breakdown</h4>
           </div>
           <div className="flex items-center justify-center mb-4">
-            <ResponsiveContainer width={160} height={160}>
-              <PieChart>
-                <Pie
-                  data={safetyBreakdownData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={45}
-                  outerRadius={70}
-                  paddingAngle={4}
-                  dataKey="value"
-                >
-                  {safetyBreakdownData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: '12px',
-                    border: '1px solid #e5e7eb',
-                    fontSize: '12px',
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            <DonutChart
+              data={safetyBreakdownData}
+              size={160}
+              strokeWidth={25}
+              centerLabel="Safety"
+              centerValue={`${safetyScore}/100`}
+            />
           </div>
           <div className="space-y-2">
             {safetyBreakdownData.map((item) => (

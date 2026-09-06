@@ -1,9 +1,4 @@
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
-  LineChart, Line,
-} from 'recharts';
-import {
   Users,
   MapPin,
   Calendar,
@@ -13,6 +8,7 @@ import {
   Activity,
   CloudSun,
 } from 'lucide-react';
+import { BarGroupChart, LineChartView, DonutChart } from '../components/SvgCharts';
 
 const monthlyData = [
   { month: 'Jan', tourists: 45200, label: '45.2K' },
@@ -98,18 +94,13 @@ export default function Analytics() {
               Tourist Footfall by Month
             </h3>
             <p className="text-sm text-muted mb-6">Monthly visitor trends (in thousands)</p>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#64748B' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#64748B' }} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  formatter={(value) => [`${value.toLocaleString()} tourists`, 'Visitors']}
-                />
-                <Bar dataKey="tourists" fill="#1688D4" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <BarGroupChart
+              data={monthlyData}
+              xKey="month"
+              height={300}
+              series={[{ key: 'tourists', name: 'Visitors', color: '#1688D4' }]}
+              tooltipFormatter={(v) => `${fmtRel(v)} tourists`}
+            />
           </div>
 
           <div className="bg-white rounded-2xl border border-gray-100 p-6">
@@ -119,27 +110,9 @@ export default function Analytics() {
             </h3>
             <p className="text-sm text-muted mb-6">Share of tourist visits by destination</p>
             <div className="flex items-center gap-6">
-              <ResponsiveContainer width="50%" height={260}>
-                <PieChart>
-                  <Pie
-                    data={destinationData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={3}
-                    dataKey="value"
-                  >
-                    {destinationData.map((entry, i) => (
-                      <Cell key={i} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ borderRadius: '12px', border: '1px solid #E2E8F0' }}
-                    formatter={(value) => [`${value}%`, 'Share']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <div className="flex justify-center flex-1">
+                <DonutChart data={destinationData} size={240} centerLabel="Destinations" centerValue="6" />
+              </div>
               <div className="space-y-3">
                 {destinationData.map((d) => (
                   <div key={d.name} className="flex items-center gap-3">
@@ -160,20 +133,17 @@ export default function Analytics() {
               Crowd Trends Over Week
             </h3>
             <p className="text-sm text-muted mb-6">Average crowd levels by time of day</p>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={crowdData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#64748B' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#64748B' }} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  formatter={(value) => [`${value}%`, '']}
-                />
-                <Line type="monotone" dataKey="morning" stroke="#38BDF8" strokeWidth={2} dot={{ r: 4 }} name="Morning" />
-                <Line type="monotone" dataKey="afternoon" stroke="#FF8A25" strokeWidth={2} dot={{ r: 4 }} name="Afternoon" />
-                <Line type="monotone" dataKey="evening" stroke="#DC2626" strokeWidth={2} dot={{ r: 4 }} name="Evening" />
-              </LineChart>
-            </ResponsiveContainer>
+            <LineChartView
+              data={crowdData}
+              xKey="day"
+              height={300}
+              series={[
+                { key: 'morning', name: 'Morning', color: '#38BDF8' },
+                { key: 'afternoon', name: 'Afternoon', color: '#FF8A25' },
+                { key: 'evening', name: 'Evening', color: '#DC2626' },
+              ]}
+              tooltipFormatter={(v) => `${v}%`}
+            />
             <div className="flex items-center justify-center gap-6 mt-2">
               <div className="flex items-center gap-2 text-sm"><div className="w-3 h-3 rounded-full bg-sky" /> Morning</div>
               <div className="flex items-center gap-2 text-sm"><div className="w-3 h-3 rounded-full bg-orange" /> Afternoon</div>
@@ -187,19 +157,16 @@ export default function Analytics() {
               Weather Impact on Tourism
             </h3>
             <p className="text-sm text-muted mb-6">How weather conditions affect bookings</p>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={weatherImpact}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                <XAxis dataKey="weather" tick={{ fontSize: 12, fill: '#64748B' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#64748B' }} />
-                <Tooltip
-                  contentStyle={{ borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                  formatter={(value, name) => name === 'bookings' ? [`${value.toLocaleString()} bookings`, 'Bookings'] : [`${value}%`, 'Satisfaction']}
-                />
-                <Bar dataKey="bookings" fill="#FF8A25" radius={[6, 6, 0, 0]} name="bookings" />
-                <Bar dataKey="satisfaction" fill="#38BDF8" radius={[6, 6, 0, 0]} name="satisfaction" />
-              </BarChart>
-            </ResponsiveContainer>
+            <BarGroupChart
+              data={weatherImpact}
+              xKey="weather"
+              height={300}
+              series={[
+                { key: 'bookings', name: 'Bookings', color: '#FF8A25' },
+                { key: 'satisfaction', name: 'Satisfaction %', color: '#38BDF8' },
+              ]}
+              tooltipFormatter={(v, name) => (name === 'Bookings' ? `${fmtRel(v)} bookings` : `${v}%`)}
+            />
             <div className="flex items-center justify-center gap-6 mt-2">
               <div className="flex items-center gap-2 text-sm"><div className="w-3 h-3 rounded-full bg-orange" /> Bookings</div>
               <div className="flex items-center gap-2 text-sm"><div className="w-3 h-3 rounded-full bg-sky" /> Satisfaction %</div>
@@ -210,3 +177,5 @@ export default function Analytics() {
     </div>
   );
 }
+
+const fmtRel = (v) => Number(v).toLocaleString('en-IN');

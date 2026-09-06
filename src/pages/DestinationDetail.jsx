@@ -9,9 +9,7 @@ import {
   TrendingUp, Hospital, ShieldAlert, Phone,
 } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
-} from 'recharts';
+import { BarGroupChart } from '../components/SvgCharts';
 
 export default function DestinationDetail() {
   const { id } = useParams();
@@ -140,8 +138,8 @@ export default function DestinationDetail() {
                   <h2 className="text-xl font-bold text-dark">Crowd Intelligence</h2>
                 </div>
                 <p className="text-sm text-muted mb-6">Know Before You Go — historical crowd levels by day and time</p>
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={[
+                <BarGroupChart
+                  data={[
                     { day: 'Mon', morning: destination.crowdData.mon.morning, afternoon: destination.crowdData.mon.afternoon, evening: destination.crowdData.mon.evening },
                     { day: 'Tue', morning: destination.crowdData.tue.morning, afternoon: destination.crowdData.tue.afternoon, evening: destination.crowdData.tue.evening },
                     { day: 'Wed', morning: destination.crowdData.wed.morning, afternoon: destination.crowdData.wed.afternoon, evening: destination.crowdData.wed.evening },
@@ -149,17 +147,20 @@ export default function DestinationDetail() {
                     { day: 'Fri', morning: destination.crowdData.fri.morning, afternoon: destination.crowdData.fri.afternoon, evening: destination.crowdData.fri.evening },
                     { day: 'Sat', morning: destination.crowdData.sat.morning, afternoon: destination.crowdData.sat.afternoon, evening: destination.crowdData.sat.evening },
                     { day: 'Sun', morning: destination.crowdData.sun.morning, afternoon: destination.crowdData.sun.afternoon, evening: destination.crowdData.sun.evening },
-                  ]}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="day" tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #e5e7eb', fontSize: '12px' }} />
-                    <Legend wrapperStyle={{ fontSize: '12px' }} />
-                    <Bar dataKey="morning" fill="#16A34A" radius={[3, 3, 0, 0]} />
-                    <Bar dataKey="afternoon" fill="#F59E0B" radius={[3, 3, 0, 0]} />
-                    <Bar dataKey="evening" fill="#DC2626" radius={[3, 3, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                  ]}
+                  height={280}
+                  series={[
+                    { key: 'morning', name: 'Morning', color: '#16A34A' },
+                    { key: 'afternoon', name: 'Afternoon', color: '#F59E0B' },
+                    { key: 'evening', name: 'Evening', color: '#DC2626' },
+                  ]}
+                  tooltipFormatter={(v, name) => `${v}% ${name}`}
+                />
+                <div className="flex items-center justify-center gap-6 mt-2">
+                  <div className="flex items-center gap-2 text-xs"><div className="w-3 h-3 rounded-full bg-success" /> Morning</div>
+                  <div className="flex items-center gap-2 text-xs"><div className="w-3 h-3 rounded-full bg-warning" /> Afternoon</div>
+                  <div className="flex items-center gap-2 text-xs"><div className="w-3 h-3 rounded-full bg-danger" /> Evening</div>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
                   <div className="p-3 bg-success/5 border border-success/20 rounded-xl text-center">
                     <p className="text-xs font-semibold text-success mb-1">Best Time to Visit</p>
