@@ -10,6 +10,16 @@ const QUICK_PROMPTS = [
   'Which package is best for a family?',
 ];
 
+function polish(text) {
+  return String(text)
+    .replace(/[*_~`#>]/g, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/^\s*[-•]\s+/gm, '• ')
+    .replace(/[⭐★☆✦✩]/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
 export default function ChatWidget() {
   const { destinations, packages, hotels } = useContent();
   const [open, setOpen] = useState(false);
@@ -113,7 +123,7 @@ export default function ChatWidget() {
       setError('Text-to-speech is not supported in this browser.');
       return;
     }
-    const clean = String(text).replace(/[*_#`>]/g, '');
+    const clean = polish(text);
     const utter = new SpeechSynthesisUtterance(clean);
     utter.lang = 'en-IN';
     utter.rate = 1.05;
@@ -201,7 +211,7 @@ export default function ChatWidget() {
                     </div>
                     <div className="group">
                       <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm text-dark shadow-sm whitespace-pre-wrap">
-                        {m.content}
+                        {polish(m.content)}
                       </div>
                       <button
                         onClick={() => toggleSpeak(i, m.content)}
