@@ -9,7 +9,7 @@ function client() {
   if (!clientPromise) {
     clientPromise = import('@supabase/supabase-js').then(({ createClient }) =>
       createClient(url, anonKey, {
-        auth: { persistSession: true, autoRefreshToken: true },
+        auth: { persistSession: true, autoRefreshToken: true, flowType: 'pkce' },
       })
     );
   }
@@ -34,6 +34,8 @@ export const supabase = isSupabaseEnabled
         signInWithPassword: (credentials) => client().then((c) => c.auth.signInWithPassword(credentials)),
         signUp: (payload) => client().then((c) => c.auth.signUp(payload)),
         signOut: () => client().then((c) => c.auth.signOut()),
+        signInWithOAuth: (payload) => client().then((c) => c.auth.signInWithOAuth(payload)),
+        exchangeCodeForSession: (code) => client().then((c) => c.auth.exchangeCodeForSession(code)),
         onAuthStateChange: (callback) => client().then((c) => c.auth.onAuthStateChange(callback)),
       },
       from: (table) => fromChain(() => client().then((c) => c.from(table))),

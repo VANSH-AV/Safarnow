@@ -112,6 +112,21 @@ export function AuthProvider({ children }) {
     return { success: true };
   };
 
+  const signInWithGoogle = async () => {
+  console.log("Supabase enabled:", isSupabaseEnabled);
+
+  if (isSupabaseEnabled) {
+      const callbackUrl = `${window.location.origin}/auth/callback`;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: callbackUrl },
+      });
+      if (error) return { success: false, error: error.message };
+      return { success: true };
+    }
+    return { success: false, error: 'Google sign-in needs Supabase setup. Use email/password instead.' };
+  };
+
   const logout = async () => {
     if (isSupabaseEnabled) {
       await supabase.auth.signOut();
@@ -120,7 +135,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, isAuthenticated: !!user, initializing }}>
+    <AuthContext.Provider value={{ user, login, signup, signInWithGoogle, logout, isAuthenticated: !!user, initializing }}>
       {children}
     </AuthContext.Provider>
   );

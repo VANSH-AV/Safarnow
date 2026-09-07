@@ -23,12 +23,13 @@ const Safety = lazy(() => import('./pages/Safety'));
 const Analytics = lazy(() => import('./pages/Analytics'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Share = lazy(() => import('./pages/Share'));
 const Admin = lazy(() => import('./pages/Admin'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
-const authPages = ['/login', '/signup'];
+const authPages = ['/login', '/signup', '/auth/callback'];
 
 const pageMeta = [
   { match: '/destinations/', title: (id) => `${idToTitle(id)} | Safarnow`, desc: 'Explore destination details, weather, crowd and safety.' },
@@ -113,6 +114,7 @@ export default function App() {
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/share/:token" element={<Share />} />
             <Route path="/admin" element={<Admin />} />
