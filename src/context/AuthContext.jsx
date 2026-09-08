@@ -131,6 +131,7 @@ function LocalAuthProvider({ children }) {
 function getClerkKey() {
   return (
     import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ||
+    import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ||
     getRuntimeConfig()?.clerkPublishableKey ||
     ''
   );
