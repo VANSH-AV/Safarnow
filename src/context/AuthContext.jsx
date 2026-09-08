@@ -1,7 +1,14 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { supabase, isSupabaseEnabled, toAppUser } from '../lib/supabase';
+import {
+  ClerkProvider as ClerkWrapper,
+  useAuth as useClerkAuth,
+  useClerk,
+  useUser,
+} from '@clerk/clerk-react';
+import { getRuntimeConfig } from '../lib/config';
 
 const AuthContext = createContext(null);
+const AuthModeContext = createContext('local');
 
 const USER_KEY = 'safarnow_user';
 const USERS_KEY = 'safarnow_users';
@@ -14,57 +21,68 @@ function readLocalUser() {
   }
 }
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => readLocalUser());
-  const [initializing, setInitializing] = useState(isSupabaseEnabled);
+export const useAuth = () => useContext(AuthContext);
+export const useAuthMode = () => useContext(AuthModeContext);
 
-  useEffect(() => {
-    if (!isSupabaseEnabled) return undefined;
+function clerkToAppUser(clerkUser) {
+  if (!clerkUser) return null;
+  return {
+    id: clerkUser.id,
+    email: clerkUser.primaryEmailAddress?.emailAddress || '',
+    name: clerkUser.fullName || clerkUser.firstName || clerkUser.primaryEmailAddress?.emailAddress?.split('@')[0] || 'Traveler',
+    preferences: clerkUser.unsafeMetadata?.preferences || [],
+    avatarUrl: clerkUser.imageUrl || '',
+  };
+}
 
-    let active = true;
-    let subscription = null;
+function ClerkAuthProvider({ children }) {
+  const { isLoaded, isSignedIn } = useClerkAuth();
+  const { user: clerkUser } = useUser();
+  const clerk = useClerk();
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (!active) return;
-      if (data?.session) setUser(toAppUser(data.session.user));
-      setInitializing(false);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (!active) return;
-      setUser(session?.user ? toAppUser(session.user) : null);
-      setInitializing(false);
-    }).then(({ data }) => {
-      if (active) subscription = data?.subscription || null;
-    });
-
-    return () => {
-      active = false;
-      subscription?.unsubscribe();
-    };
-  }, []);
+  const user = isSignedIn ? clerkToAppUser(clerkUser) : null;
 
   useEffect(() => {
     if (user) {
       localStorage.setItem(USER_KEY, JSON.stringify(user));
     } else {
       localStorage.removeItem(USER_KEY);
-      if (isSupabaseEnabled) {
-        localStorage.removeItem(USERS_KEY);
-      }
+      localStorage.removeItem(USERS_KEY);
+    }
+  }, [user]);
+
+  const login = async () => ({ success: false, error: 'Use the sign-in form.' });
+  const signup = async () => ({ success: false, error: 'Use the sign-up form.' });
+  const signInWithGoogle = async () => ({ success: true });
+  const logout = async () => {
+    await clerk.signOut();
+  };
+
+  return (
+    <AuthModeContext.Provider value="clerk">
+      <AuthContext.Provider
+        value={{ user, login, signup, signInWithGoogle, logout, isAuthenticated: isSignedIn, initializing: !isLoaded }}
+      >
+        {children}
+      </AuthContext.Provider>
+    </AuthModeContext.Provider>
+  );
+}
+
+function LocalAuthProvider({ children }) {
+  const [user, setUser] = useState(() => readLocalUser());
+  const [initializing, setInitializing] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(USERS_KEY);
     }
   }, [user]);
 
   const login = async (email, password) => {
-    if (isSupabaseEnabled) {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error || !data.session) {
-        return { success: false, error: error?.message || 'Invalid email or password' };
-      }
-      setUser(toAppUser(data.session.user));
-      return { success: true };
-    }
-
     const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     const found = users.find((u) => u.email === email && u.password === password);
     if (found) {
@@ -81,25 +99,6 @@ export function AuthProvider({ children }) {
   };
 
   const signup = async (name, email, password, preferences) => {
-    if (isSupabaseEnabled) {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { name, preferences } },
-      });
-      if (error) return { success: false, error: error.message };
-      if (!data.user) return { success: false, error: 'Sign up failed. Please try again.' };
-      const needsConfirmation = !data.session;
-      setUser(toAppUser(data.user));
-      return {
-        success: true,
-        needsConfirmation,
-        message: needsConfirmation
-          ? 'Account created! Check your email to confirm before logging in.'
-          : 'Account created!',
-      };
-    }
-
     const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
     if (users.find((u) => u.email === email)) {
       return { success: false, error: 'Email already exists' };
@@ -112,33 +111,38 @@ export function AuthProvider({ children }) {
     return { success: true };
   };
 
-  const signInWithGoogle = async () => {
-  console.log("Supabase enabled:", isSupabaseEnabled);
-
-  if (isSupabaseEnabled) {
-      const callbackUrl = `${window.location.origin}/auth/callback`;
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: callbackUrl },
-      });
-      if (error) return { success: false, error: error.message };
-      return { success: true };
-    }
-    return { success: false, error: 'Google sign-in needs Supabase setup. Use email/password instead.' };
-  };
+  const signInWithGoogle = async () => ({ success: false, error: 'Google sign-in is available after connecting the app to Clerk.' });
 
   const logout = async () => {
-    if (isSupabaseEnabled) {
-      await supabase.auth.signOut();
-    }
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, signInWithGoogle, logout, isAuthenticated: !!user, initializing }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthModeContext.Provider value="local">
+      <AuthContext.Provider
+        value={{ user, login, signup, signInWithGoogle, logout, isAuthenticated: !!user, initializing }}
+      >
+        {children}
+      </AuthContext.Provider>
+    </AuthModeContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+function getClerkKey() {
+  return (
+    import.meta.env.VITE_CLERK_PUBLISHABLE_KEY ||
+    getRuntimeConfig()?.clerkPublishableKey ||
+    ''
+  );
+}
+
+export function AuthProvider({ children }) {
+  if (getClerkKey()) {
+    return (
+      <ClerkWrapper publishableKey={getClerkKey()} afterSignOutUrl="/">
+        <ClerkAuthProvider>{children}</ClerkAuthProvider>
+      </ClerkWrapper>
+    );
+  }
+  return <LocalAuthProvider>{children}</LocalAuthProvider>;
+}

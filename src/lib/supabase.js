@@ -1,7 +1,21 @@
-const url = import.meta.env.VITE_SUPABASE_URL || '';
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+import { getRuntimeConfig, subscribeRuntimeConfig } from './config';
 
-export const isSupabaseEnabled = Boolean(url && anonKey);
+let url = import.meta.env.VITE_SUPABASE_URL || '';
+let anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
+export let isSupabaseEnabled = Boolean(url && anonKey);
+
+function applyConfig() {
+  const rc = getRuntimeConfig();
+  if (rc) {
+    if (rc.supabaseUrl) url = rc.supabaseUrl;
+    if (rc.supabaseAnonKey) anonKey = rc.supabaseAnonKey;
+  }
+  isSupabaseEnabled = Boolean(url && anonKey);
+}
+
+subscribeRuntimeConfig(applyConfig);
+applyConfig();
 
 let clientPromise = null;
 
@@ -27,20 +41,18 @@ function fromChain(getBuilder) {
   return chain;
 }
 
-export const supabase = isSupabaseEnabled
-  ? {
-      auth: {
-        getSession: () => client().then((c) => c.auth.getSession()),
-        signInWithPassword: (credentials) => client().then((c) => c.auth.signInWithPassword(credentials)),
-        signUp: (payload) => client().then((c) => c.auth.signUp(payload)),
-        signOut: () => client().then((c) => c.auth.signOut()),
-        signInWithOAuth: (payload) => client().then((c) => c.auth.signInWithOAuth(payload)),
-        exchangeCodeForSession: (code) => client().then((c) => c.auth.exchangeCodeForSession(code)),
-        onAuthStateChange: (callback) => client().then((c) => c.auth.onAuthStateChange(callback)),
-      },
-      from: (table) => fromChain(() => client().then((c) => c.from(table))),
-    }
-  : null;
+export const supabase = {
+  auth: {
+    getSession: () => client().then((c) => c.auth.getSession()),
+    signInWithPassword: (credentials) => client().then((c) => c.auth.signInWithPassword(credentials)),
+    signUp: (payload) => client().then((c) => c.auth.signUp(payload)),
+    signOut: () => client().then((c) => c.auth.signOut()),
+    signInWithOAuth: (payload) => client().then((c) => c.auth.signInWithOAuth(payload)),
+    exchangeCodeForSession: (code) => client().then((c) => c.auth.exchangeCodeForSession(code)),
+    onAuthStateChange: (callback) => client().then((c) => c.auth.onAuthStateChange(callback)),
+  },
+  from: (table) => fromChain(() => client().then((c) => c.from(table))),
+};
 
 export function toAppUser(sbUser) {
   if (!sbUser) return null;
