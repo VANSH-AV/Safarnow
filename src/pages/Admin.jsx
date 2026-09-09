@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { useContent } from '../context/ContentContext';
-import { addContent, removeContent, listAdminContent, importContent, isAdminUser, getAdminGuidance } from '../lib/backend';
+import { addContent, removeContent, listAdminContent, importContent, isAdminUser } from '../lib/backend';
 import { isSupabaseEnabled } from '../lib/supabase';
 import {
   ShieldCheck,
@@ -105,16 +105,21 @@ export default function Admin() {
 
   useEffect(() => {
     let alive = true;
-    (async () => {
-      const uid = await getAdminGuidance();
-      if (!alive) return;
-      setGuidance(uid);
-      const admin = await isAdminUser(uid);
+    const uid = user?.id || null;
+    setGuidance(uid);
+    if (!uid) {
+      setIsAdmin(false);
+      setLoading(false);
+      return () => {
+        alive = false;
+      };
+    }
+    isAdminUser(uid).then((admin) => {
       if (alive) {
         setIsAdmin(admin);
         setLoading(false);
       }
-    })();
+    });
     return () => {
       alive = false;
     };
