@@ -1,7 +1,9 @@
 import { supabase, isSupabaseEnabled } from './supabase';
+import { getAuthToken } from './session';
 
 const BOOKINGS_KEY = 'safarnow_bookings';
 const SAVED_KEY = 'safarnow_saved_trips';
+const USER_KEY = 'safarnow_user';
 
 function readLocal(key) {
   try {
@@ -16,13 +18,39 @@ function writeLocal(key, value) {
 }
 
 async function currentUserId() {
-  if (!isSupabaseEnabled) return null;
-  const { data } = await supabase.auth.getSession();
-  return data?.session?.user?.id || null;
+  try {
+    return JSON.parse(localStorage.getItem(USER_KEY) || 'null')?.id || null;
+  } catch {
+    return null;
+  }
+}
+
+async function dataAction(action, payload) {
+  const token = await getAuthToken();
+  if (!token) return { ok: false, status: 401, error: 'No session token' };
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  let res;
+  try {
+    res = await fetch('/api/data', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ action, payload: payload || {} }),
+    });
+  } catch {
+    return { ok: false, status: 0, error: 'Network error' };
+  }
+  let json;
+  try {
+    json = await res.json();
+  } catch {
+    return { ok: false, status: res.status, error: 'Bad response' };
+  }
+  return { ok: res.ok, status: res.status, ...json };
 }
 
 function isLoggedOutLocal() {
-  return !localStorage.getItem('safarnow_user');
+  return !localStorage.getItem(USER_KEY);
 }
 
 // ---------------------------------------------------------------------------
@@ -33,16 +61,12 @@ export async function getBookings() {
   const uid = await currentUserId();
   if (!isSupabaseEnabled || !uid) return local;
 
-  const { data, error } = await supabase
-    .from('bookings')
-    .select('data')
-    .eq('user_id', uid);
-  if (error || !data) return local;
+  const res = await dataAction('listBookings');
+  if (!res.ok || !Array.isArray(res.bookings)) return local;
 
-  const remote = data.map((r) => r.data);
-  const byId = new Map(remote.map((b) => [b.id, b]));
+  const byId = new Map(res.bookings.filter(Boolean).map((b) => [b.id, b]));
   local.forEach((b) => {
-    if (!byId.has(b.id)) byId.set(b.id, b);
+    if (b && !byId.has(b.id)) byId.set(b.id, b);
   });
   return Array.from(byId.values());
 }
@@ -56,11 +80,7 @@ export async function saveBooking(booking) {
 
   const uid = await currentUserId();
   if (!isSupabaseEnabled || !uid) return;
-
-  await supabase.from('bookings').upsert(
-    { user_id: uid, booking_id: booking.id, data: booking },
-    { onConflict: 'user_id,booking_id' }
-  );
+  await dataAction('saveBooking', { booking });
 }
 
 // ---------------------------------------------------------------------------
@@ -71,16 +91,12 @@ export async function getSavedTrips() {
   const uid = await currentUserId();
   if (!isSupabaseEnabled || !uid) return local;
 
-  const { data, error } = await supabase
-    .from('saved_trips')
-    .select('destination_id, data')
-    .eq('user_id', uid);
-  if (error || !data) return local;
+  const res = await dataAction('listSavedTrips');
+  if (!res.ok || !Array.isArray(res.trips)) return local;
 
   const byId = new Map(local.map((t) => [t.destinationId, t]));
-  data.forEach((r) => {
-    const stored = r.data || { destinationId: r.destination_id };
-    byId.set(r.destination_id, stored);
+  res.trips.forEach((t) => {
+    if (t && t.destinationId) byId.set(t.destinationId, t);
   });
   return Array.from(byId.values());
 }
@@ -94,32 +110,19 @@ export async function saveTrip(destId, tripData) {
 
   const uid = await currentUserId();
   if (!isSupabaseEnabled || !uid) return;
-  await supabase.from('saved_trips').upsert(
-    { user_id: uid, destination_id: destId, data: tripData },
-    { onConflict: 'user_id,destination_id' }
-  );
+  await dataAction('saveTrip', { destinationId: destId, tripData });
 }
 
 // ---------------------------------------------------------------------------
 // Shared itineraries
 // ---------------------------------------------------------------------------
 export async function createShareLink(itinerary) {
-  if (!isSupabaseEnabled) return null;
   const uid = await currentUserId();
-  if (!uid) return null;
+  if (!isSupabaseEnabled || !uid) return null;
 
-  const { data, error } = await supabase
-    .from('shared_itineraries')
-    .insert({
-      user_id: uid,
-      destination_id: itinerary.destinationId || null,
-      date_label: itinerary.dateLabel || itinerary.startDate || null,
-      data: itinerary,
-    })
-    .select('token')
-    .single();
-  if (error || !data) return null;
-  return data.token;
+  const res = await dataAction('createShare', { itinerary });
+  if (!res.ok || !res.token) return null;
+  return res.token;
 }
 
 export async function getSharedItinerary(token) {
@@ -134,7 +137,7 @@ export async function getSharedItinerary(token) {
 }
 
 // ---------------------------------------------------------------------------
-// Catalog content (added via /admin)
+// Catalog content (reads are public; writes go through the verified admin API)
 // ---------------------------------------------------------------------------
 export async function fetchContentTables() {
   if (!isSupabaseEnabled) return { destinations: [], packages: [], hotels: [] };
@@ -150,21 +153,6 @@ export async function fetchContentTables() {
   };
 }
 
-export async function addContent(tableName, item, userId) {
-  if (!isSupabaseEnabled || !userId) return { error: 'Supabase not configured or not signed in.' };
-  const { error } = await supabase.from(tableName).upsert(
-    { id: item.id, data: item },
-    { onConflict: 'id' }
-  );
-  return error ? { error: error.message } : { success: true };
-}
-
-export async function removeContent(tableName, id, userId) {
-  if (!isSupabaseEnabled || !userId) return { error: 'Supabase not configured or not signed in.' };
-  const { error } = await supabase.from(tableName).delete().eq('id', id);
-  return error ? { error: error.message } : { success: true };
-}
-
 export async function listAdminContent(tableName) {
   if (!isSupabaseEnabled) return [];
   const { data, error } = await supabase.from(tableName).select('id, data');
@@ -172,21 +160,25 @@ export async function listAdminContent(tableName) {
   return (data || []).map((r) => ({ id: r.id, ...r.data }));
 }
 
+export async function addContent(tableName, item, userId) {
+  if (!isSupabaseEnabled || !userId) return { error: 'Supabase not configured or not signed in.' };
+  const res = await dataAction('addContent', { table: tableName, item });
+  if (!res.ok) return { error: res.error || 'Could not save the content.' };
+  return { success: true };
+}
+
+export async function removeContent(tableName, id, userId) {
+  if (!isSupabaseEnabled || !userId) return { error: 'Supabase not configured or not signed in.' };
+  const res = await dataAction('removeContent', { table: tableName, id });
+  if (!res.ok) return { error: res.error || 'Could not delete the content.' };
+  return { success: true };
+}
+
 export async function importContent(tableName, items, userId) {
   if (!isSupabaseEnabled || !userId) return { error: 'Supabase not configured or not signed in.' };
-  const existing = await listAdminContent(tableName);
-  const existingIds = new Set(existing.map((r) => r.id));
-  const toInsert = (items || []).filter((item) => item && !existingIds.has(item.id));
-  const errors = [];
-  for (const item of toInsert) {
-    const res = await addContent(tableName, item, userId);
-    if (res.error) errors.push(`${item.id}: ${res.error}`);
-  }
-  return {
-    inserted: toInsert.length - errors.length,
-    skipped: (items || []).length - toInsert.length,
-    errors,
-  };
+  const res = await dataAction('importContent', { table: tableName, items });
+  if (!res.ok) return { error: res.error || 'Could not import the content.' };
+  return { inserted: res.inserted ?? 0, skipped: res.skipped ?? 0, errors: res.errors || [] };
 }
 
 // ---------------------------------------------------------------------------
@@ -194,14 +186,12 @@ export async function importContent(tableName, items, userId) {
 // ---------------------------------------------------------------------------
 export async function isAdminUser(userId) {
   if (!isSupabaseEnabled || !userId) return false;
-  const { data, error } = await supabase.from('admin_users').select('user_id').eq('user_id', userId).maybeSingle();
-  return !error && Boolean(data);
+  const res = await dataAction('isAdmin');
+  return res.ok ? Boolean(res.admin) : false;
 }
 
 export async function getAdminGuidance() {
-  if (!isSupabaseEnabled) return null;
-  const uid = await currentUserId();
-  return uid;
+  return currentUserId();
 }
 
 export { isLoggedOutLocal };

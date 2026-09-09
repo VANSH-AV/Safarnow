@@ -6,6 +6,7 @@ import {
   useUser,
 } from '@clerk/clerk-react';
 import { getRuntimeConfig } from '../lib/config';
+import { registerAuthTokenGetter } from '../lib/session';
 
 const AuthContext = createContext(null);
 const AuthModeContext = createContext('local');
@@ -50,6 +51,11 @@ function ClerkAuthProvider({ children }) {
       localStorage.removeItem(USERS_KEY);
     }
   }, [user]);
+
+  useEffect(() => {
+    registerAuthTokenGetter(() => clerk.session?.getToken() ?? null);
+    return () => registerAuthTokenGetter(null);
+  }, [clerk]);
 
   const login = async () => ({ success: false, error: 'Use the sign-in form.' });
   const signup = async () => ({ success: false, error: 'Use the sign-up form.' });
