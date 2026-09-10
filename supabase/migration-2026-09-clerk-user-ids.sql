@@ -13,18 +13,17 @@ alter table public.admin_users alter column user_id type text;
 
 -- bookings: text user id; RLS enabled with NO policies (service role only)
 alter table public.bookings drop constraint if exists bookings_user_id_fkey;
-alter table public.bookings alter column user_id type text;
 drop policy if exists "own bookings all" on public.bookings;
+alter table public.bookings alter column user_id type text;
 
 -- saved_trips: text user id; RLS enabled with NO policies (service role only)
 alter table public.saved_trips drop constraint if exists saved_trips_user_id_fkey;
-alter table public.saved_trips alter column user_id type text;
 drop policy if exists "own saved trips all" on public.saved_trips;
-
+alter table public.saved_trips alter column user_id type text;
 -- shared_itineraries: keep public read so share links work; only the proxy writes
 alter table public.shared_itineraries drop constraint if exists shared_itineraries_user_id_fkey;
-alter table public.shared_itineraries alter column user_id type text;
 drop policy if exists "owner write shared itineraries" on public.shared_itineraries;
+alter table public.shared_itineraries alter column user_id type text;
 
 create index if not exists bookings_user_id_idx on public.bookings (user_id);
 create index if not exists saved_trips_user_id_idx on public.saved_trips (user_id);

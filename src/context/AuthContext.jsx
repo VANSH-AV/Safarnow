@@ -53,7 +53,7 @@ function ClerkAuthProvider({ children }) {
   }, [user]);
 
   useEffect(() => {
-    registerAuthTokenGetter(() => clerk.session?.getToken() ?? null);
+    registerAuthTokenGetter(() => clerk.session?.getToken());
     return () => registerAuthTokenGetter(null);
   }, [clerk]);
 
