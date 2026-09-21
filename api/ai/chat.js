@@ -109,9 +109,12 @@ async function handleItinerary(req, res, apiKey, model, body) {
     return;
   }
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-2.0-flash';
+  const prompt = buildItineraryPrompt(itineraryRequest, dataContext);
+  const lastError = { status: null, message: null };
 
-  try {
+  const attempt = async (attemptModel) => {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${attemptModel}:generateContent`;
     const geminiRes = await fetch(url, {
       method: 'POST',
       headers: {
@@ -119,7 +122,7 @@ async function handleItinerary(req, res, apiKey, model, body) {
         'x-goog-api-key': apiKey,
       },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: buildItineraryPrompt(itineraryRequest, dataContext) }] },
+        system_instruction: { parts: [{ text: prompt }] },
         contents: [{ role: 'user', parts: [{ text: `Generate the itinerary for ${destination} now. Return only the JSON object.` }] }],
         generationConfig: {
           temperature: 0.7,
@@ -130,15 +133,34 @@ async function handleItinerary(req, res, apiKey, model, body) {
     });
 
     if (!geminiRes.ok) {
-      await geminiRes.text().catch(() => '');
-      res.status(502).json({ error: 'The AI service could not generate an itinerary right now. Please try again.' });
-      return;
+      let detail = '';
+      const bodyText = await geminiRes.text().catch(() => '');
+      try {
+        detail = JSON.parse(bodyText)?.error?.message || bodyText.slice(0, 300);
+      } catch {
+        detail = bodyText.slice(0, 300);
+      }
+      lastError.status = geminiRes.status;
+      lastError.message = detail;
+      return null;
     }
 
     const data = await geminiRes.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  };
+
+  try {
+    let text = await attempt(model);
+
+    if (!text && [400, 404, 429, 500, 503].includes(lastError.status)) {
+      text = await attempt(fallbackModel);
+    }
+
     if (!text) {
-      res.status(502).json({ error: 'The AI returned an empty response. Please regenerate.' });
+      res.status(502).json({
+        error: 'The AI service could not generate an itinerary right now. Please try again.',
+        detail: `[${lastError.status ?? 'unknown'}] ${lastError.message ?? 'No response from the AI service.'}`,
+      });
       return;
     }
 

@@ -168,7 +168,6 @@ export default function AIPlanner() {
       setSelectedDestination(dest);
       setItinerary(plan);
       setContextDashboard(dest ? buildSmartContext(dest, weather, preferences, isOnline) : null);
-      setAdjustingBudget(false);
       setStep(5);
       addNotification(budgetTight ? 'Budget-adjusted itinerary ready!' : 'Your personalized itinerary is ready!', 'success');
     } catch (err) {
