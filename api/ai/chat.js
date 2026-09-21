@@ -1,4 +1,4 @@
-const MODEL = 'gemini-3.6-flash';
+const MODEL = 'gemini-flash-latest';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -109,7 +109,7 @@ async function handleItinerary(req, res, apiKey, model, body) {
     return;
   }
 
-  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-2.0-flash';
+  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash';
   const prompt = buildItineraryPrompt(itineraryRequest, dataContext);
   const lastError = { status: null, message: null };
 
