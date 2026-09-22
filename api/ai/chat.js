@@ -11,8 +11,9 @@ const MODEL_POOL = [
 ];
 
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503]);
-const MAX_ATTEMPTS_PER_MODEL = 2;
-const PER_ATTEMPT_TIMEOUT_MS = 20000;
+const MAX_ATTEMPTS_PER_MODEL = 3;
+const PER_ATTEMPT_TIMEOUT_MS = 18000;
+const OVERALL_DEADLINE_MS = 45000; // stay comfortably under maxDuration (60s)
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -44,10 +45,15 @@ async function readGeminiResponse(res) {
 
 async function generateWithRetry({ apiKey, models, systemInstruction, contents, config }) {
   const lastError = { status: null, message: null };
+  const startedAt = Date.now();
   let usedModel = null;
 
   for (const model of models) {
     for (let attempt = 1; attempt <= MAX_ATTEMPTS_PER_MODEL; attempt += 1) {
+      if (Date.now() - startedAt >= OVERALL_DEADLINE_MS) {
+        lastError.message = lastError.message || 'Timed out while waiting for the AI service.';
+        break;
+      }
       let result;
       try {
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
