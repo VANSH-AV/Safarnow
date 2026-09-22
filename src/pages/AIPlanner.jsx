@@ -165,6 +165,10 @@ export default function AIPlanner() {
         onPhase: setGenPhase,
         budgetTight,
       });
+
+      if (!plan || !Array.isArray(plan.days) || plan.days.length === 0) {
+        throw new PlannerError('We received an empty itinerary. Please regenerate.', 'parse');
+      }
       setSelectedDestination(dest);
       setItinerary(plan);
       setContextDashboard(dest ? buildSmartContext(dest, weather, preferences, isOnline) : null);
@@ -205,7 +209,6 @@ export default function AIPlanner() {
     setContextDashboard(null);
     setError(null);
     setRegenError(null);
-    setAdjustingBudget(false);
     setCustomDuration('');
   };
 

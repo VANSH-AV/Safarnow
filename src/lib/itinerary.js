@@ -168,7 +168,34 @@ export async function generateItineraryPlan(preferences, context, { onPhase, bud
   }
 
   onPhase?.('done');
-  return normalizeItinerary(raw, preferences, context.destination);
+  const plan = normalizeItinerary(raw, preferences, context.destination);
+  assertItineraryContent(plan);
+  return plan;
+}
+
+// ---------------------------------------------------------------------------
+// Validate the normalized itinerary has real content before it is shown as a
+// successful result. Guards against a "200 OK but empty/blank itinerary" — an
+// HTTP success is NOT treated as success unless this passes.
+// ---------------------------------------------------------------------------
+export function assertItineraryContent(itinerary) {
+  const days = Array.isArray(itinerary?.days) ? itinerary.days : [];
+  const totalActivities = days.reduce((sum, d) => sum + (Array.isArray(d?.activities) ? d.activities.length : 0), 0);
+  const hasBudget = Number.isFinite(Number(itinerary?.totalCost)) && Number(itinerary.totalCost) > 0;
+
+  if (days.length === 0) {
+    throw new PlannerError('We received an empty itinerary. Please regenerate.', 'parse', false);
+  }
+  if (totalActivities === 0) {
+    throw new PlannerError('The itinerary has no activities. Please regenerate.', 'parse', false);
+  }
+  if (!itinerary?.destination) {
+    throw new PlannerError('The itinerary is missing its destination. Please regenerate.', 'parse', false);
+  }
+  if (!hasBudget) {
+    throw new PlannerError('The itinerary is missing its estimated cost. Please regenerate.', 'parse', false);
+  }
+  return true;
 }
 
 // ---------------------------------------------------------------------------

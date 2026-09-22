@@ -1,4 +1,97 @@
-const MODEL = 'gemini-flash-latest';
+// Ordered pool of Gemini models. The first entry is the default primary; the
+// request walks down the list (and retries transient errors) until a model
+// returns usable content. Set GEMINI_MODEL / GEMINI_FALLBACK_MODEL in the
+// server environment to override (comma-separated fallbacks are supported).
+const MODEL_POOL = [
+  'gemini-3.6-flash',
+  'gemini-3.8-flash',
+  'gemini-3.7-flash',
+  'gemini-3.5-flash',
+  'gemini-3.1-pro-preview',
+];
+
+const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503]);
+const MAX_ATTEMPTS_PER_MODEL = 2;
+const PER_ATTEMPT_TIMEOUT_MS = 20000;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function resolveModels() {
+  const primary = (process.env.GEMINI_MODEL || '').trim();
+  const fallbacks = (process.env.GEMINI_FALLBACK_MODEL || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return Array.from(new Set([...(primary ? [primary] : []), ...fallbacks, ...MODEL_POOL]));
+}
+
+async function readGeminiResponse(res) {
+  const bodyText = await res.text().catch(() => '');
+  let data = null;
+  try {
+    data = JSON.parse(bodyText);
+  } catch {
+    // tolerate non-JSON error bodies
+  }
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  return {
+    ok: res.ok,
+    status: res.status,
+    message: data?.error?.message || bodyText.slice(0, 300),
+    text,
+  };
+}
+
+async function generateWithRetry({ apiKey, models, systemInstruction, contents, config }) {
+  const lastError = { status: null, message: null };
+  let usedModel = null;
+
+  for (const model of models) {
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS_PER_MODEL; attempt += 1) {
+      let result;
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-goog-api-key': apiKey,
+          },
+          body: JSON.stringify({
+            ...(systemInstruction
+              ? { system_instruction: { parts: [{ text: systemInstruction }] } }
+              : {}),
+            contents,
+            generationConfig: config,
+          }),
+          signal: AbortSignal.timeout(PER_ATTEMPT_TIMEOUT_MS),
+        });
+        result = await readGeminiResponse(res);
+      } catch (err) {
+        result = { ok: false, status: 0, message: err?.name === 'TimeoutError' ? 'Model timed out.' : (err?.message || 'Could not reach the AI service.'), text: '' };
+      }
+
+      lastError.status = result.status;
+      lastError.message = result.message || 'The AI returned an empty response.';
+
+      if (result.ok && result.text) {
+        usedModel = model;
+        return { ok: true, text: result.text, model: usedModel, lastError };
+      }
+      if (result.ok && !result.text) {
+        lastError.message = `${model} returned an empty response. Try again.`;
+        break; // retrying the same model won't help an empty reply
+      }
+      if (attempt >= MAX_ATTEMPTS_PER_MODEL || !result.status || !RETRYABLE_STATUS.has(result.status)) {
+        if (result.message) lastError.message = `${result.message} (${model})`;
+        break; // non-recoverable (400/404/etc.) or attempts exhausted for this model
+      }
+      await sleep(600 * attempt); // backoff before retrying this model
+    }
+  }
+
+  return { ok: false, text: '', model: usedModel, lastError };
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -21,27 +114,23 @@ export default async function handler(req, res) {
     return;
   }
 
-  const model = process.env.GEMINI_MODEL || MODEL;
-
   if (body.mode === 'itinerary') {
-    await handleItinerary(req, res, apiKey, model, body);
+    await handleItinerary(req, res, apiKey, body);
     return;
   }
 
-  await handleChat(req, res, apiKey, model, body);
+  await handleChat(req, res, apiKey, body);
 }
 
 // ---------------------------------------------------------------------------
 // Chat (existing assistant used by the floating chat widget)
 // ---------------------------------------------------------------------------
-async function handleChat(req, res, apiKey, model, body) {
+async function handleChat(req, res, apiKey, body) {
   const { messages = [], dataContext = {} } = body;
   if (!Array.isArray(messages) || messages.length === 0) {
     res.status(400).json({ error: 'No messages provided' });
     return;
   }
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
   const contents = messages
     .filter((m) => m && typeof m.content === 'string' && m.content.trim())
@@ -55,45 +144,35 @@ async function handleChat(req, res, apiKey, model, body) {
     return;
   }
 
-  try {
-    const geminiRes = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
-      },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: buildSystemPrompt(dataContext) }] },
-        contents,
-        generationConfig: {
-          temperature: 0.6,
-          maxOutputTokens: 1024,
-        },
-      }),
+  const config = {
+    temperature: 0.6,
+    maxOutputTokens: 1024,
+    thinkingConfig: { thinkingBudget: 128 },
+  };
+
+  const { ok, text, model, lastError } = await generateWithRetry({
+    apiKey,
+    models: resolveModels(),
+    systemInstruction: buildSystemPrompt(dataContext),
+    contents,
+    config,
+  });
+
+  if (!ok || !text) {
+    res.status(502).json({
+      error: 'The AI assistant is unavailable right now. Please try again.',
+      detail: `[${lastError.status ?? 'unknown'}] ${lastError.message ?? 'No response from the AI service.'}`,
     });
-
-    if (!geminiRes.ok) {
-      await geminiRes.text().catch(() => '');
-      res.status(502).json({ error: `AI service returned an error (${geminiRes.status}). Please try again.` });
-      return;
-    }
-
-    const data = await geminiRes.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    if (!text) {
-      res.status(502).json({ error: 'AI service returned an empty response. Please try again.' });
-      return;
-    }
-    res.status(200).json({ reply: text });
-  } catch (err) {
-    res.status(502).json({ error: err?.message || 'Could not reach the AI service.' });
+    return;
   }
+
+  res.status(200).json({ reply: text, model });
 }
 
 // ---------------------------------------------------------------------------
 // AI Trip Planner: structured itinerary generation
 // ---------------------------------------------------------------------------
-async function handleItinerary(req, res, apiKey, model, body) {
+async function handleItinerary(req, res, apiKey, body) {
   const { itineraryRequest = {}, dataContext = {} } = body;
 
   const destination = itineraryRequest?.destination;
@@ -109,71 +188,41 @@ async function handleItinerary(req, res, apiKey, model, body) {
     return;
   }
 
-  const fallbackModel = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash';
-  const prompt = buildItineraryPrompt(itineraryRequest, dataContext);
-  const lastError = { status: null, message: null };
-
-  const attempt = async (attemptModel) => {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${attemptModel}:generateContent`;
-    const geminiRes = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': apiKey,
-      },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: prompt }] },
-        contents: [{ role: 'user', parts: [{ text: `Generate the itinerary for ${destination} now. Return only the JSON object.` }] }],
-        generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 4096,
-          responseMimeType: 'application/json',
-        },
-      }),
-    });
-
-    if (!geminiRes.ok) {
-      let detail = '';
-      const bodyText = await geminiRes.text().catch(() => '');
-      try {
-        detail = JSON.parse(bodyText)?.error?.message || bodyText.slice(0, 300);
-      } catch {
-        detail = bodyText.slice(0, 300);
-      }
-      lastError.status = geminiRes.status;
-      lastError.message = detail;
-      return null;
-    }
-
-    const data = await geminiRes.json();
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const config = {
+    temperature: 0.7,
+    maxOutputTokens: 4096,
+    responseMimeType: 'application/json',
+    thinkingConfig: { thinkingBudget: 512 },
   };
 
-  try {
-    let text = await attempt(model);
+  const { ok, text, model, lastError } = await generateWithRetry({
+    apiKey,
+    models: resolveModels(),
+    systemInstruction: buildItineraryPrompt(itineraryRequest, dataContext),
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: `Generate the itinerary for ${destination} now. Return only the JSON object.` }],
+      },
+    ],
+    config,
+  });
 
-    if (!text && [400, 404, 429, 500, 503].includes(lastError.status)) {
-      text = await attempt(fallbackModel);
-    }
-
-    if (!text) {
-      res.status(502).json({
-        error: 'The AI service could not generate an itinerary right now. Please try again.',
-        detail: `[${lastError.status ?? 'unknown'}] ${lastError.message ?? 'No response from the AI service.'}`,
-      });
-      return;
-    }
-
-    const parsed = parseItineraryJson(text);
-    if (!parsed || !Array.isArray(parsed.days) || parsed.days.length === 0) {
-      res.status(502).json({ error: 'We received an incomplete itinerary. Please regenerate.' });
-      return;
-    }
-
-    res.status(200).json({ itinerary: parsed });
-  } catch (err) {
-    res.status(502).json({ error: err?.message || 'Could not reach the AI service.' });
+  if (!ok || !text) {
+    res.status(502).json({
+      error: 'The AI service could not generate an itinerary right now. Please try again.',
+      detail: `[${lastError.status ?? 'unknown'}] ${lastError.message ?? 'No response from the AI service.'}`,
+    });
+    return;
   }
+
+  const parsed = parseItineraryJson(text);
+  if (!parsed || !Array.isArray(parsed.days) || parsed.days.length === 0) {
+    res.status(502).json({ error: 'We received an incomplete itinerary. Please regenerate.' });
+    return;
+  }
+
+  res.status(200).json({ itinerary: parsed, model });
 }
 
 function parseItineraryJson(text) {

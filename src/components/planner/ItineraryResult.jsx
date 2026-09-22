@@ -50,6 +50,7 @@ export default function ItineraryResult({
   regenError,
   onSaveTrip,
   onRegenerate,
+  onAdjust,
   onModify,
   onStartOver,
   onBookNow,
@@ -59,6 +60,30 @@ export default function ItineraryResult({
   const [activeDay, setActiveDay] = useState(1);
   const [mapView, setMapView] = useState(false);
   const [activeActivity, setActiveActivity] = useState(null);
+
+  const hasContent =
+    itinerary &&
+    Array.isArray(itinerary.days) &&
+    itinerary.days.length > 0 &&
+    itinerary.days.some((d) => Array.isArray(d?.activities) && d.activities.length > 0);
+
+  if (!hasContent) {
+    return (
+      <div className="animate-slide-up bg-white rounded-2xl border border-gray-100 p-10 text-center">
+        <h2 className="text-xl font-bold text-dark mb-2">No itinerary to show</h2>
+        <p className="text-muted mb-6">
+          The AI did not return usable content for this trip. Please regenerate.
+        </p>
+        <button
+          onClick={onRegenerate}
+          disabled={generating}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-blue text-white rounded-xl font-semibold hover:bg-blue/90 disabled:opacity-60"
+        >
+          <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} /> Regenerate
+        </button>
+      </div>
+    );
+  }
 
   const over = budgetDelta(itinerary, preferences);
   const currency = itinerary.currency || 'INR';
@@ -113,7 +138,7 @@ export default function ItineraryResult({
             <p className="text-sm text-muted">We can regenerate a more budget-conscious version without changing your budget.</p>
           </div>
           <button
-            onClick={onRegenerate}
+            onClick={onAdjust}
             disabled={generating}
             className="flex items-center gap-2 px-5 py-2.5 bg-orange text-white rounded-xl font-semibold hover:bg-orange/90 disabled:opacity-60 transition-all"
           >
